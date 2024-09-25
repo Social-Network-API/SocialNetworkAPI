@@ -1,0 +1,53 @@
+@startuml
+entity "User" as User {
+    + userID : int <<PK>>
+    + username : string
+    + password : string
+    + email : string
+}
+
+entity "Post" as Post {
+    + postID : int <<PK>>
+    + content : string
+    + imageURL : string   // URL of the post image
+    + createdAt : datetime
+}
+
+entity "Friendship" as Friendship {
+    + friendshipID : int <<PK>>
+    + userID1 : int <<FK>>
+    + userID2 : int <<FK>>
+}
+
+entity "Comment" as Comment {
+    + commentID : int <<PK>>
+    + postID : int <<FK>>
+    + userID : int <<FK>>
+    + content : string
+    + createdAt : datetime
+}
+
+entity "Like" as Like {
+    + likeID : int <<PK>>
+    + postID : int <<FK>>
+    + userID : int <<FK>>
+}
+
+entity "Registration" as Registration {
+    + registrationID : int <<PK>>
+    + userID : int <<FK>>
+    + registrationDate : datetime
+}
+
+' Relationships
+User ||--o{ Post : creates
+User ||--o{ Friendship : follows
+User ||--o{ Comment : comments
+User ||--o{ Like : gives like
+Friendship }o--o{ User : "friend of"
+
+Post ||--o{ Comment : has
+Post ||--o{ Like : has
+
+User ||--o{ Registration : "registers"
+@enduml
