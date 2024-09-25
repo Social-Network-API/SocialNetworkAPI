@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore 
 
       - name: Build solution
-        run: dotnet build --no-restore
+        run: dotnet build SocialNetworkAPI.sln --no-restore
 
       # Run tests and collect coverage
       - name: Run tests with coverage
