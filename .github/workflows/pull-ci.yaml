@@ -32,6 +32,8 @@ jobs:
     name: Conventional Pull Request
     runs-on: ubuntu-latest
     steps:
+      - name: Verify PR title format
+        uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
