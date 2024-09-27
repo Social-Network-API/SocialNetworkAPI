@@ -31,21 +31,31 @@ jobs:
   semantic_pull_request:
     name: Conventional Pull Request
     runs-on: ubuntu-latest
+
     steps:
       - name: Verify PR title format
-        uses: amannn/action-semantic-pull-request@v5
+      - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          headerPattern: '^(feature|bugfix|hotfix|release)/ID\-\d+/(.*)$'
-          headerPatternCorrespondence: id, subject
+          types: |
+            feat
+            fix
+            revert
+            docs
+            refactor
+            chore
+            test
+            hotfix
+          requireScope: false
           subjectPattern: .+
           subjectPatternError: |
             The subject "{subject}" found in the pull request title "{title}"
-            didn't match the required format. The PR title must follow the pattern 'feature/ID-[NroID]/title-of-card'.
-          requireScope: false
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
+          headerPattern: '^(\w*)(?:\(([\w$.\-*/ ]*)\))?: (.*)$'
+          headerPatternCorrespondence: type, scope, subject
           validateSingleCommit: true
-
   pull_request_check:
     name: Pull Request Check
     runs-on: ubuntu-latest
