@@ -29,23 +29,24 @@ jobs:
       - name: Run unit tests
         run: dotnet test --no-build
 
-  semantic_pull_request:
-    name: Conventional Pull Request
-    runs-on: ubuntu-latest
+semantic_pull_request:
+  name: Conventional Pull Request
+  runs-on: ubuntu-latest
 
-    steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          headerPattern: '^ID\-\d+: (.*)$'
-          headerPatternCorrespondence: id, subject
-          subjectPattern: .+
-          subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            didn't match the required format. The PR title must follow the pattern 'ID-[NroID]: title-of-card'.
-          requireScope: false
-          validateSingleCommit: true
+  steps:
+    - uses: amannn/action-semantic-pull-request@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        headerPattern: '^(feature|bugfix|hotfix|release)/ID\-\d+/(.*)$'
+        headerPatternCorrespondence: id, subject
+        subjectPattern: .+
+        subjectPatternError: |
+          The subject "{subject}" found in the pull request title "{title}"
+          didn't match the required format. The PR title must follow the pattern 'feature/ID-[NroID]/title-of-card'.
+        requireScope: false
+        validateSingleCommit: true
+
 
   pull_request_check:
     name: Pull Request Check
