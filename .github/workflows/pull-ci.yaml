@@ -3,7 +3,7 @@ name: Pull request - CI
 on:
   pull_request:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.x'
+          dotnet-version: "8.x"
 
       - name: Restore dependencies
         run: dotnet restore ./SocialNetworkAPI.sln
@@ -26,3 +26,82 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test --no-build
+
+        semantic_pull_request:
+          name: Conventional Pull Request
+          runs-on: ubuntu-latest
+
+          steps:
+            - uses: amannn/action-semantic-pull-request@v5
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                headerPattern: '^ID\-\d+: (.*)$'
+                headerPatternCorrespondence: id, subject
+                subjectPattern: .+
+                subjectPatternError: |
+                  The subject "{subject}" found in the pull request title "{title}"
+                  didn't match the required format. The PR title must follow the pattern 'ID-[NroID]: title-of-card'.
+                requireScope: false
+                validateSingleCommit: true
+
+        pull_request_check:
+          name: Pull Request Check
+          runs-on: ubuntu-latest
+
+          steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Verify pull request description
+              run: |
+                PR_BODY=$(jq -r '.pull_request.body' "$GITHUB_EVENT_PATH")
+                echo "Pull Request Body: $PR_BODY"
+                if ! echo "$PR_BODY" | grep -q "ID-[0-9]\+"; then
+                  echo "❌ PR description must include an ID in the format: ID-20."
+                  exit 1
+                fi
+                if ! echo "$PR_BODY" | grep -q "https://trello.com/c/"; then
+                  echo "❌ PR description must include a Trello link."
+                  exit 1
+                fi
+                if ! echo "$PR_BODY" | grep -q "What did I do?"; then
+                  echo "❌ PR description must answer: What did I do?"
+                  exit 1
+                fi
+                if ! echo "$PR_BODY" | grep -q "Why did I do this?"; then
+                  echo "❌ PR description must answer: Why did I do this?"
+                  exit 1
+                fi
+                if ! echo "$PR_BODY" | grep -q "How did I do it?"; then
+                  echo "❌ PR description must answer: How did I do it?"
+                  exit 1
+                fi
+                echo "✅ Pull request description follows the correct format."
+
+        check_branches_convention:
+          name: Conventional Branches Name
+          runs-on: ubuntu-latest
+
+          steps:
+            - uses: deepakputhraya/action-branch-name@master
+              with:
+                regex: '^(feature|hotfix)/(ID-[0-9]+/[a-zA-Z0-9-]+|no-ref/[a-zA-Z0-9-]+)$'
+                allowed_prefixes: 'feature,hotfix'
+                ignore: main,develop
+                min_length: 4
+                max_length: 50
+
+          check_commit_messages:
+            name: Conventional Commits Message
+            runs-on: ubuntu-latest
+
+            steps:
+              - uses: gsactions/commit-message-checker@v2
+                with:
+                  pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+'
+                  error: 'The commit message must have the following structure: <type>(?): <description>'
+                  excludeDescription: 'true'
+                  excludeTitle: 'true'
+                  checkAllCommitMessages: 'true'
+                  accessToken: ${{ secrets.GITHUB_TOKEN }}
