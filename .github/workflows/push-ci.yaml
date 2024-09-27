@@ -5,7 +5,7 @@ on:
     branches:
       - develop
       - main
-
+  
 permissions: read-all
 
 jobs:
