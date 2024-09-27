@@ -1,4 +1,5 @@
-@startuml
+@startuml title UML Diagram for Social Media Entity-Relationship Database
+
 entity "User" as User {
     + userID : int <<PK>>
     + username : string
