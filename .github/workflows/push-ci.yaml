@@ -22,10 +22,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
-        run: dotnet restore 
+        run: dotnet restore ./SocialNetworkAPI.sln
 
       - name: Build solution
-        run: dotnet build ..sln
+        run: dotnet build ./SocialNetworkAPI.sln --no-restore
 
       - name: Run tests with coverage
         working-directory: ./SocialNetworkTests
@@ -47,29 +47,29 @@ jobs:
           name: coverage-report
           path: ./TestResults/CoverageReport
 
-      check_branches_convention:
-        name: Conventional Branches Name
-        runs-on: ubuntu-latest
+  check_branches_convention:
+    name: Conventional Branches Name
+    runs-on: ubuntu-latest
 
-        steps:
-          - uses: deepakputhraya/action-branch-name@master
-            with:
-              regex: '^(feature|hotfix)/(ID-[0-9]+/[a-zA-Z0-9-]+|no-ref/[a-zA-Z0-9-]+)$'
-              allowed_prefixes: 'feature,hotfix'
-              ignore: main,develop
-              min_length: 4
-              max_length: 50
+    steps:
+      - uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '^(feature|hotfix)/(ID-[0-9]+/[a-zA-Z0-9-]+|no-ref/[a-zA-Z0-9-]+)$'
+          allowed_prefixes: 'feature,hotfix'
+          ignore: main,develop
+          min_length: 4
+          max_length: 50
 
-      check_commit_messages:
-        name: Conventional Commits Message
-        runs-on: ubuntu-latest
+  check_commit_messages:
+    name: Conventional Commits Message
+    runs-on: ubuntu-latest
 
-        steps:
-          - uses: gsactions/commit-message-checker@v2
-            with:
-              pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+'
-              error: 'The commit message must have the following structure: <type>(?): <description>'
-              excludeDescription: 'true'
-              excludeTitle: 'true'
-              checkAllCommitMessages: 'true'
-              accessToken: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: gsactions/commit-message-checker@v2
+        with:
+          pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+'
+          error: 'The commit message must have the following structure: <type>(?): <description>'
+          excludeDescription: 'true'
+          excludeTitle: 'true'
+          checkAllCommitMessages: 'true'
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
