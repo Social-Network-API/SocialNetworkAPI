@@ -21,22 +21,18 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
-        working-directory: ./SocialNetworkApi
         run: dotnet restore 
 
       - name: Build solution
-        run: dotnet build ./SocialNetworkAPI.sln --no-restore
+        run: dotnet build ..sln
 
-      # Run tests and collect coverage
       - name: Run tests with coverage
         working-directory: ./SocialNetworkTests
         run: dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
-      # Install ReportGenerator
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      # Generate the coverage report using ReportGenerator
       - name: Generate coverage report
         run: |
           reportgenerator \
@@ -44,9 +40,36 @@ jobs:
           -targetdir:./TestResults/CoverageReport \
           -reporttypes:Html
 
-      # Upload the coverage report as an artifact
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: ./TestResults/CoverageReport
+
+      check_branches_convention:
+        name: Conventional Branches Name
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: deepakputhraya/action-branch-name@master
+            with:
+              regex: '^(feature|hotfix)/(ID-[0-9]+/[a-zA-Z0-9-]+|no-ref/[a-zA-Z0-9-]+)$'
+              allowed_prefixes: 'feature,hotfix'
+              ignore: main,develop
+              min_length: 4
+              max_length: 50
+
+      check_commit_messages:
+        name: Conventional Commits Message
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: gsactions/commit-message-checker@v2
+            with:
+              pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+'
+              error: 'The commit message must have the following structure: <type>(?): <description>'
+              excludeDescription: 'true'
+              excludeTitle: 'true'
+              checkAllCommitMessages: 'true'
+              accessToken: ${{ secrets.GITHUB_TOKEN }}
+              
