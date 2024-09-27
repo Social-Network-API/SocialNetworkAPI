@@ -1,5 +1,5 @@
 services:
-  database:  # Cambiado de postgres a db
+  database:  
     container_name: social-db
     image: postgres:12.20-alpine3.20
     ports:
@@ -37,7 +37,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - database  # Cambiado de postgres a db
+      - database  
 
   swagger:
     image: swaggerapi/swagger-ui
