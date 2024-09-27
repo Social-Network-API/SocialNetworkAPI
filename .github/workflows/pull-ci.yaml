@@ -36,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          headerPattern: '^(feature|bugfix|hotfix|release)/ID\-\d+/(.*)$'
+          headerPattern: '^ID\-\d+: (.*)$'
           headerPatternCorrespondence: id, subject
           subjectPattern: .+
           subjectPatternError: |
