@@ -1,18 +1,30 @@
+using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Services;
+using SocialNetwork.Persistence.DataBase;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<PostsService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.UseSwaggerUI(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ExpenseTracker API v1");
+        options.RoutePrefix = string.Empty; 
     });
 }
 
+app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
