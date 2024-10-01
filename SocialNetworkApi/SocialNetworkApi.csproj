@@ -20,4 +20,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Docs\UML\assets\social-network-api.png" />
+  </ItemGroup>
+
 </Project>
