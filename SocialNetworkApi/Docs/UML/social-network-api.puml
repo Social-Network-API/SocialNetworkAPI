@@ -1,0 +1,306 @@
+@startuml Social-Network-API
+
+package "Controller Layer" {
+    interface IUserController {
+        +getAllUsers(): List<UserDTO>
+        +getUserById(userId: int): UserDTO
+        +createUser(user: UserDTO): UserDTO
+        +updateUser(userId: int, user: UserDTO): UserDTO
+        +deleteUser(userId: int): void
+    }
+
+    interface IPostController {
+        +getAllPosts(): List<PostDTO>
+        +getPostById(postId: int): PostDTO
+        +createPost(post: PostDTO): PostDTO
+        +updatePost(postId: int, post: PostDTO): PostDTO
+        +deletePost(postId: int): void
+    }
+
+    interface ICommentController {
+        +getAllComments(): List<CommentDTO>
+        +getCommentById(commentId: int): CommentDTO
+        +createComment(comment: CommentDTO): CommentDTO
+        +deleteComment(commentId: int): void
+    }
+
+    interface ILikeController {
+        +likePost(postId: int, userId: int): void
+        +unlikePost(postId: int, userId: int): void
+    }
+
+    interface IFollowController {
+        +followUser(followerId: int, followedId: int): void
+        +unfollowUser(followerId: int, followedId: int): void
+    }
+
+    interface IAuthController {
+        +login(email: String, password: String): AuthTokenDTO
+        +register(user: UserDTO): UserDTO
+        +logout(userId: int): void
+    }
+
+    class UserController implements IUserController {
+        +getAllUsers(): List<UserDTO>
+        +getUserById(userId: int): UserDTO
+        +createUser(user: UserDTO): UserDTO
+        +updateUser(userId: int, user: UserDTO): UserDTO
+        +deleteUser(userId: int): void
+    }
+
+    class PostController implements IPostController {
+        +getAllPosts(): List<PostDTO>
+        +getPostById(postId: int): PostDTO
+        +createPost(post: PostDTO): PostDTO
+        +updatePost(postId: int, post: PostDTO): PostDTO
+        +deletePost(postId: int): void
+    }
+
+    class CommentController implements ICommentController {
+        +getAllComments(): List<CommentDTO>
+        +getCommentById(commentId: int): CommentDTO
+        +createComment(comment: CommentDTO): CommentDTO
+        +deleteComment(commentId: int): void
+    }
+
+    class LikeController implements ILikeController {
+        +likePost(postId: int, userId: int): void
+        +unlikePost(postId: int, userId: int): void
+    }
+
+    class FollowController implements IFollowController {
+        +followUser(followerId: int, followedId: int): void
+        +unfollowUser(followerId: int, followedId: int): void
+    }
+
+    class AuthController implements IAuthController {
+        +login(email: String, password: String): AuthTokenDTO
+        +register(user: UserDTO): UserDTO
+        +logout(userId: int): void
+    }
+}
+
+package "Service Layer" {
+    interface IUserService {
+        +getAllUsers(): List<User>
+        +getUserById(userId: int): User
+        +createUser(user: User): User
+        +updateUser(userId: int, user: User): User
+        +deleteUser(userId: int): void
+    }
+
+    interface IPostService {
+        +getAllPosts(): List<Post>
+        +getPostById(postId: int): Post
+        +createPost(post: Post): Post
+        +updatePost(postId: int, post: Post): Post
+        +deletePost(postId: int): void
+    }
+
+    interface ICommentService {
+        +getAllComments(): List<Comment>
+        +getCommentById(commentId: int): Comment
+        +createComment(comment: Comment): Comment
+        +deleteComment(commentId: int): void
+    }
+
+    interface ILikeService {
+        +likePost(postId: int, userId: int): void
+        +unlikePost(postId: int, userId: int): void
+    }
+
+    interface IFollowService {
+        +followUser(followerId: int, followedId: int): void
+        +unfollowUser(followerId: int, followedId: int): void
+    }
+
+    interface IAuthService {
+        +login(email: String, password: String): AuthToken
+        +register(user: User): User
+        +logout(userId: int): void
+    }    
+}
+
+package "Repository Layer" {
+    interface IUserRepository {
+        +findAll(): List<User>
+        +findById(userId: int): Optional<User>
+        +save(user: User): User
+        +deleteById(userId: int): void
+    }
+
+    interface IPostRepository {
+        +findAll(): List<Post>
+        +findById(postId: int): Optional<Post>
+        +save(post: Post): Post
+        +deleteById(postId: int): void
+    }
+
+    interface ICommentRepository {
+        +findAll(): List<Comment>
+        +findById(commentId: int): Optional<Comment>
+        +save(comment: Comment): Comment
+        +deleteById(commentId: int): void
+    }
+
+    interface ILikeRepository {
+        +likePost(postId: int, userId: int): void
+        +unlikePost(postId: int, userId: int): void
+    }
+
+    interface IFollowRepository {
+        +followUser(followerId: int, followedId: int): void
+        +unfollowUser(followerId: int, followedId: int): void
+    }
+
+    interface IAuthRepository {
+        +findByEmail(email: String): Optional<User>
+        +saveResetToken(userId: int, token: String): void
+        +findResetToken(token: String): Optional<ResetToken>
+    }
+}
+
+package "Model Layer" {
+    class User {
+        -userId: int
+        -name: String
+        -email: String
+        -password: String
+        -profilePicture: String
+        -createdAt: Timestamp
+        -updatedAt: Timestamp
+        +getUserId(): int
+        +getName(): String
+        +getEmail(): String
+        +getPassword(): String
+        +getProfilePicture(): String
+        +getCreatedAt(): Timestamp
+        +getUpdatedAt(): Timestamp
+    }
+
+    class Post {
+        -postId: int
+        -userId: int
+        -content: String
+        -imageUrl: String
+        -createdAt: Timestamp
+        -updatedAt: Timestamp
+        +getPostId(): int
+        +getUserId(): int
+        +getContent(): String
+        +getImageUrl(): String
+        +getCreatedAt(): Timestamp
+        +getUpdatedAt(): Timestamp
+    }
+
+    class Comment {
+        -commentId: int
+        -postId: int
+        -userId: int
+        -content: String
+        -createdAt: Timestamp
+        -updatedAt: Timestamp
+        +getCommentId(): int
+        +getPostId(): int
+        +getUserId(): int
+        +getContent(): String
+        +getCreatedAt(): Timestamp
+        +getUpdatedAt(): Timestamp
+    }
+
+    class Like {
+        -likeId: int
+        -postId: int
+        -userId: int
+        -createdAt: Timestamp
+        +getLikeId(): int
+        +getPostId(): int
+        +getUserId(): int
+        +getCreatedAt(): Timestamp
+    }
+
+    class Follow {
+        -followerId: int
+        -followedId: int
+        -createdAt: Timestamp
+        +getFollowerId(): int
+        +getFollowedId(): int
+        +getCreatedAt(): Timestamp
+    }
+
+    class AuthToken {
+        -token: String
+        -expiresAt: Timestamp
+        +getToken(): String
+        +getExpiresAt(): Timestamp
+    }
+
+    class ResetToken {
+        -resetId: int
+        -userId: int
+        -token: String
+        -createdAt: Timestamp
+        -expiresAt: Timestamp
+        +getResetId(): int
+        +getUserId(): int
+        +getToken(): String
+        +getCreatedAt(): Timestamp
+        +getExpiresAt(): Timestamp
+    }    
+}
+
+package "DTO Layer" {
+    class UserDTO {
+        +userId: int
+        +name: String
+        +email: String
+        +profilePicture: String
+    }
+
+    class PostDTO {
+        +postId: int
+        +userId: int
+        +content: String
+        +imageUrl: String
+    }
+
+    class CommentDTO {
+        +commentId: int
+        +postId: int
+        +userId: int
+        +content: String
+    }
+
+    class AuthTokenDTO {
+        +token: String
+        +expiresAt: Timestamp
+    }
+
+}
+
+UserController --> IUserService
+PostController --> IPostService
+CommentController --> ICommentService
+LikeController --> ILikeService
+FollowController --> IFollowService
+AuthController --> IAuthService
+
+IUserService --> IUserRepository
+IPostService --> IPostRepository
+ICommentService --> ICommentRepository
+ILikeService --> ILikeRepository
+IFollowService --> IFollowRepository
+IAuthService --> IAuthRepository
+
+IUserRepository --> User
+IPostRepository --> Post
+ICommentRepository --> Comment
+ILikeRepository --> Like
+IFollowRepository --> Follow
+IAuthRepository --> User
+
+IUserService --> User
+IPostService --> Post
+ICommentService --> Comment
+
+@enduml
