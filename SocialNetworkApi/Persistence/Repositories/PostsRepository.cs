@@ -1,7 +1,4 @@
-using System;
-using System.Threading.Tasks;
-using Dapper;
-using Npgsql;
+using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Domain;
 using SocialNetwork.Persistence.DataBase;
 
@@ -9,67 +6,67 @@ namespace SocialNetwork.Persistence.Repositories
 {
     public class PostsRepository
     {
-        private readonly IDbConnectionFactory _dbConnectionFactory;
+        private readonly ApplicationDbContext _dbContext;
 
-        public PostsRepository(IDbConnectionFactory dbConnectionFactory)
+        public PostsRepository(ApplicationDbContext dbContext)
         {
-            _dbConnectionFactory = dbConnectionFactory;
+            _dbContext = dbContext;
         }
 
         public async Task<Post> CreateAsync(Post post)
+        
         {
-            using (var connection = await _dbConnectionFactory.CreateConnectionAsync())
-            {
-                string sql = @"INSERT INTO Posts (post_id, user_id, content, image, created_at)
-                               VALUES (@PostId, @UserId, @Content, @Image, @CreatedAt)
-                               RETURNING *;";
+            Console.WriteLine($"Image value: {post.ImageUrl}");
 
-                return await connection.QuerySingleAsync<Post>(sql, post);
-            }
+            await _dbContext.Posts.AddAsync(post); 
+            await _dbContext.SaveChangesAsync();   
+            return post;
         }
 
         public async Task<Post> GetByIdAsync(Guid postId)
         {
-            using (var connection = await _dbConnectionFactory.CreateConnectionAsync())
-            {
-                string sql = "SELECT * FROM Posts WHERE post_id = @PostId;";
-                return await connection.QuerySingleOrDefaultAsync<Post>(sql, new { PostId = postId });
-            }
+            return await _dbContext.Posts.FindAsync(postId); 
         }
 
-        public async Task<Post> EditAsync(Guid postId, Post post)
+        public async Task<Post> EditAsync(Guid postId, Post updatedPost)
         {
-            using (var connection = await _dbConnectionFactory.CreateConnectionAsync())
-            {
-                string sql = @"UPDATE Posts SET content = @Content, image = @Image
-                               WHERE post_id = @PostId
-                               RETURNING *;";
+            var existingPost = await _dbContext.Posts.FindAsync(postId);
+            if (existingPost == null)
+                return null;
+            
+            existingPost.Content = updatedPost.Content;
+            existingPost.ImageUrl = updatedPost.ImageUrl;
 
-                return await connection.QuerySingleAsync<Post>(sql, new
-                {
-                    PostId = postId,
-                    Content = post.Content,
-                    Image = post.Image
-                });
-            }
+            _dbContext.Posts.Update(existingPost);
+            await _dbContext.SaveChangesAsync();   
+            return existingPost;
         }
 
         public async Task DeleteAsync(Guid postId)
         {
-            using (var connection = await _dbConnectionFactory.CreateConnectionAsync())
+            var post = await _dbContext.Posts.FindAsync(postId);
+            if (post != null)
             {
-                string sql = "DELETE FROM Posts WHERE post_id = @PostId;";
-                await connection.ExecuteAsync(sql, new { PostId = postId });
+                _dbContext.Posts.Remove(post); 
+                await _dbContext.SaveChangesAsync(); 
             }
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(Guid userId)
+        public async Task<IEnumerable<Post>> GetUserPostsAsync(Guid userId)
         {
-            using (var connection = await _dbConnectionFactory.CreateConnectionAsync())
-            {
-                string sql = "SELECT * FROM Posts WHERE user_id = @UserId;";
-                return await connection.QueryAsync<Post>(sql, new { UserId = userId });
-            }
+            return await _dbContext.Posts
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync(); 
+        }
+
+        public async Task<IEnumerable<Post>> GetHomePostsAsync(Guid userId)
+        {
+            return await _dbContext.Posts
+                .Where(p => p.UserId == userId || 
+                            _dbContext.Friends.Any(f => f.UserId == userId && f.FriendId == p.UserId))
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync(); 
         }
     }
 }

@@ -1,60 +1,66 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.Domain;
+using SocialNetwork.Mappers.Requests;
 using SocialNetwork.Services;
 
 namespace SocialNetwork.Controllers
 {
     [ApiController]
-    [Route("api/v1/posts")]
-    public class PostsController : ControllerBase
+    [Route("api/v1/[controller]")]
+    public class PostsController(PostsService postsService) : ControllerBase
     {
-        private readonly PostsService _postsService;
+        private readonly PostsService _postsService = postsService;
 
-        public PostsController(PostsService postsService)
-        {
-            _postsService = postsService;
-        }
-
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
-        {
-            var post = await _postsService.ReadAsync(id);
-            return post == null ? NotFound() : Ok(post);
-        }
-
-        [HttpGet("users/{userId:guid}")]
-        public async Task<IActionResult> GetPostsByUser([FromRoute] Guid userId)
-        {
-            var posts = await _postsService.GetPostsByUserAsync(userId);
-            return Ok(posts);
-        }
-
-        [HttpGet("feed")]
-        public async Task<IActionResult> GetUserFeed()
-        {
-            var feed = await _postsService.GetUserFeedAsync();
-            return Ok(feed);
-        }
-        
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Post post)
+        public async Task<IActionResult> Create([FromBody] CreatePostRequest request)
         {
-            var createdPost = await _postsService.CreateAsync(post);
-            return Ok(CreatedAtAction(nameof(Get), new { id = createdPost.Id }, createdPost).Value);
+            var post = request.ToDomain(); 
+            var response = await _postsService.CreateAsync(post);  
+            return CreatedAtAction(
+                actionName: nameof(Get),
+                routeValues: new { postId = post.Id },
+                value: response.Data
+            );
         }
 
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] Post post)
+        [HttpGet("{postId:guid}")]
+        public async Task<IActionResult> Get([FromRoute] Guid postId)
         {
-            var result = await _postsService.UpdateAsync(id, post);
-            return result ? Ok() : NotFound();
+            var result = await _postsService.GetByIdAsync(postId);
+            return result.Data is null
+                ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"Post not found (postId {postId})")
+                : Ok(result.Data);
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        [HttpPut("{postId:guid}")]
+        public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] EditPostRequest request)
         {
-            var result = await _postsService.DeleteAsync(id);
-            return result ? Ok() : NotFound();
+            var post = request.ToDomain();
+            var result = await _postsService.EditAsync(postId, post);
+
+            return result.Success
+                ? Ok(result.Data)
+                : Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Failed to update post");
+        }
+ 
+        [HttpDelete("{postId:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid postId)
+        {
+            await _postsService.DeleteAsync(postId);
+            return NoContent();
+        }
+
+        [HttpGet("/users/{userId:guid}/posts")]
+        public async Task<IActionResult> GetUserPosts([FromRoute] Guid userId)
+        {
+            var result = await _postsService.GetUserPostsAsync(userId);
+            return Ok(result.Data);
+        }
+
+        [HttpGet("/home")]
+        public async Task<IActionResult> GetHomePosts([FromRoute] Guid userId)
+        {
+            var result = await _postsService.GetHomePostsAsync( userId);
+            return Ok(result.Data);
         }
     }
 }

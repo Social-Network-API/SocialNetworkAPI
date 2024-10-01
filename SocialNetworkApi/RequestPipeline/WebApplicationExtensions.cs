@@ -1,28 +1,30 @@
-﻿namespace SocialNetwork.RequestPipeline;
-
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using SocialNetwork.Persistence.DataBase;
 
-public static class WebApplicationExtensions
+namespace SocialNetwork.RequestPipeline
 {
-    public static WebApplication InitializeDatabase(this WebApplication app)
+    public static class WebApplicationExtensions
     {
-        DbInitializer.Initialize(app.Configuration[DbConstants.DefaultConnectionPath]);
-
-        return app;
-    }
-
-    public static WebApplication UseGlobalErrorHandling(this WebApplication app)
-    {
-        app.UseExceptionHandler("/error");
-
-        app.Map("/error", (HttpContext httpContext) =>
+        public static WebApplication InitializeDatabase(this WebApplication app)
         {
-            var exception = httpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+            DbInitializer.Initialize(app.Configuration[DbConstants.DefaultConnectionPath]);
 
-            return Results.Problem();
-        });
+            return app;
+        }
 
-        return app;
+        public static WebApplication UseGlobalErrorHandling(this WebApplication app)
+        {
+            app.UseExceptionHandler("/error");
+
+            app.Map("/error", (HttpContext httpContext) =>
+            {
+                var exception = httpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+                return Results.Problem();
+            });
+
+            return app;
+        }
     }
+ 
 }

@@ -1,24 +1,15 @@
 using SocialNetwork.Domain;
 using System;
 
+using SocialNetwork.Domain;
+
 namespace SocialNetwork.Mappers.Responses
 {
-    public class PostResponse
+    public record PostResponse(Guid Id, Guid UserId, string Content, string ImageUrl, DateTime CreatedAt)
     {
-        public Guid Id { get; set; }
-        public required string Content { get; set; }
-        public required string Image { get; set; }
-        public DateTime CreatedAt { get; set; }
-
         public static PostResponse FromDomain(Post post)
         {
-            return new PostResponse
-            {
-                Id = post.Id,
-                Content = post.Content,
-                Image = post.Image,
-                CreatedAt = post.CreatedAt
-            };
+            return new PostResponse(post.Id,post.UserId , post.Content, post.ImageUrl, post.CreatedAt);
         }
     }
 }

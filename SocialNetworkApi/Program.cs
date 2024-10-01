@@ -1,13 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Services;
 using SocialNetwork.Persistence.DataBase;
+using SocialNetwork.Persistence.Repositories;
+using SocialNetwork.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<PostsRepository>();
 builder.Services.AddScoped<PostsService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
