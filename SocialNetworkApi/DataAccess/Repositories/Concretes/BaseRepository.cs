@@ -7,12 +7,12 @@ namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
 public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
 
-    // protected readonly IDbConnectionFactory _dbConnectionFactory;
+    protected readonly IDbConnectionFactory _dbConnectionFactory;
 
-    // public BaseRepository(IDbConnectionFactory dbConnectionFactory)
-    // {
-    //     _dbConnectionFactory = dbConnectionFactory;
-    // }
+    public BaseRepository(IDbConnectionFactory dbConnectionFactory)
+    {
+        _dbConnectionFactory = dbConnectionFactory;
+    }
 
     public async Task<IList<T>> GetAll()
     {
