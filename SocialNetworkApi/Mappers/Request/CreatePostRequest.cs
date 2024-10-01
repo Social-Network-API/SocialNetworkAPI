@@ -1,20 +1,20 @@
 using SocialNetwork.Domain;
+using SocialNetwork.Persistence.DataBase;
 
 namespace SocialNetwork.Mappers.Requests
 {
-    public class CreatePostRequest
+    public record CreatePostRequest(string Content, string ImageUrl)
     {
-        public required string Content { get; set; }
-        public required string Image { get; set; }
-
         public Post ToDomain()
         {
             return new Post
             {
-                Content = this.Content,
-                Image = this.Image
+                Id = Guid.NewGuid(),
+                Content = Content,
+                ImageUrl = ImageUrl,
+                CreatedAt = DateTime.UtcNow,
+                UserId =UserContext.CurrentUserId
             };
         }
     }
 }
-

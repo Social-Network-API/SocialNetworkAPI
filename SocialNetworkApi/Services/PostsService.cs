@@ -1,74 +1,72 @@
-using Microsoft.EntityFrameworkCore;
 using RestApi.Services.interfaces;
 using SocialNetwork.Domain;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetwork.Mappers.Responses;
+using SocialNetwork.Persistence.Repositories;
+using SocialNetwork.Models;
+
 
 namespace SocialNetwork.Services
 {
-    public class PostsService : IBaseService<Post>
+    public class PostsService : IService<Post, PostResponse>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly PostsRepository _postsRepository;
 
-        public PostsService(ApplicationDbContext context)
+        public PostsService(PostsRepository postsRepository)
         {
-            _context = context;
+            _postsRepository = postsRepository;
         }
 
-        public async Task<Post> CreateAsync(Post post)
+        public async Task<ServiceResult<PostResponse>> CreateAsync(Post post)
         {
-            _context.Post.Add(post);
-            await _context.SaveChangesAsync();
-            return post;
+            await _postsRepository.CreateAsync(post);
+            var response = PostResponse.FromDomain(post);
+            return new ServiceResult<PostResponse> { Data = response, Success = true };
         }
 
-        public async Task<List<Post>> ReadAsync()
+        public async Task<ServiceResult<PostResponse>> GetByIdAsync(Guid postId)
         {
-            return await _context.Post
-                .Where(p => p.UserId == UserContext.CurrentUserId)
-                .ToListAsync();
+            var post = await _postsRepository.GetByIdAsync(postId);
+            return post is null
+                ? new ServiceResult<PostResponse> { Data = null, Success = false }
+                : new ServiceResult<PostResponse> { Data = PostResponse.FromDomain(post), Success = true };
         }
 
-        public async Task<Post?> ReadAsync(Guid id)
+        public async Task<ServiceResult<PostResponse>> EditAsync(Guid postId, Post updatedPost)
         {
-            return await _context.Post
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        public async Task<bool> UpdateAsync(Guid id, Post updatedPost)
-        {
-            var existingPost = await _context.Post.FindAsync(id);
-            if (existingPost == null) return false;
-
+            var existingPost = await _postsRepository.GetByIdAsync(postId);
+    
+            if (existingPost == null)
+            {
+                return new ServiceResult<PostResponse> { Success = false };
+            }
+    
             existingPost.Content = updatedPost.Content;
             existingPost.ImageUrl = updatedPost.ImageUrl;
 
-            await _context.SaveChangesAsync();
-            return true;
+            await _postsRepository.EditAsync(postId, existingPost);
+    
+            var response = PostResponse.FromDomain(existingPost);
+            return new ServiceResult<PostResponse> { Data = response, Success = true };
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+
+        public async Task DeleteAsync(Guid postId)
         {
-            var post = await _context.Post.FindAsync(id);
-            if (post == null) return false;
-
-            _context.Post.Remove(post);
-            await _context.SaveChangesAsync();
-            return true;
+            await _postsRepository.DeleteAsync(postId);
         }
 
-        public async Task<List<Post>> GetPostsByUserAsync(Guid userId)
+        public async Task<ServiceResult<IEnumerable<PostResponse>>> GetUserPostsAsync(Guid userId)
         {
-            return await _context.Post
-                .Where(p => p.UserId == userId)
-                .ToListAsync();
+            var posts = await _postsRepository.GetUserPostsAsync(userId);
+            var response = posts.Select(PostResponse.FromDomain);
+            return new ServiceResult<IEnumerable<PostResponse>> { Data = response, Success = true };
         }
-        public async Task<List<Post>> GetUserFeedAsync()
+
+        public async Task<ServiceResult<IEnumerable<PostResponse>>> GetHomePostsAsync(Guid userId)
         {
-            return await _context.Post
-                .Where(p => p.UserId == UserContext.CurrentUserId || p.User.Friends.Contains(UserContext.CurrentUserId))
-                .ToListAsync();
+            var posts = await _postsRepository.GetHomePostsAsync( userId);
+            var response = posts.Select(PostResponse.FromDomain);
+            return new ServiceResult<IEnumerable<PostResponse>> { Data = response, Success = true };
         }
-
-
     }
 }

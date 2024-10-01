@@ -3,14 +3,14 @@ CREATE TABLE Users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    profile_image VARCHAR(255)
+    profile_image VARCHAR(255) NULL
 );
 
 CREATE TABLE Posts (
     post_id UUID PRIMARY KEY,
     user_id UUID REFERENCES Users(user_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    image VARCHAR(255),
+    imageUrl VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
