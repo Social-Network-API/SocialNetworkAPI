@@ -1,0 +1,199 @@
+@startuml Social-Network-Api
+
+namespace SocialNetwork.Controllers {
+  class UsersController {
+    - UsersService _usersService
+    + Task<IActionResult> Register(CreateUserRequest request)
+    + Task<IActionResult> Login(LoginUserRequest request)
+    + Task<IActionResult> EditProfile(Guid userId, EditProfileRequest request)
+  }
+  
+  class PostsController {
+    - PostsService _postsService
+    + Task<IActionResult> Create(CreatePostRequest request)
+    + Task<IActionResult> Edit(Guid postId, EditPostRequest request)
+    + Task<IActionResult> Delete(Guid postId)
+    + Task<IActionResult> AddComment(Guid postId, CreateCommentRequest request)
+    + Task<IActionResult> AddLike(Guid postId)
+  }
+
+  class FriendsController {
+    - FriendsService _friendsService
+    + Task<IActionResult> FollowUser(Guid userId)
+    + Task<IActionResult> UnfollowUser(Guid userId)
+  }
+}
+
+namespace SocialNetwork.Mappers.Requests {
+  class CreateUserRequest {
+    + string Name
+    + string Email
+    + string Password
+    + User ToDomain()
+  }
+
+  class CreatePostRequest {
+    + string Content
+    + string Image
+    + Post ToDomain()
+  }
+
+  class EditPostRequest {
+    + string Content
+    + string Image
+    + Post ToDomain()
+  }
+  
+  class CreateCommentRequest {
+    + string Content
+    + Comment ToDomain()
+  }
+}
+
+namespace SocialNetwork.Services {
+  interface IService<TBase, TResponse> {
+    + Task<ServiceResult<TResponse>> CreateAsync(TBase entity)
+    + Task<ServiceResult<TResponse>> GetByIdAsync(Guid id)
+  }
+
+  class UsersService implements IService<User, UserResponse> {
+    - UsersRepository _usersRepository
+    + Task<ServiceResult<UserResponse>> RegisterAsync(User user)
+    + Task<ServiceResult<UserResponse>> LoginAsync(string email, string password)
+  }
+
+  class PostsService implements IService<Post, PostResponse> {
+    - PostsRepository _postsRepository
+    + Task<ServiceResult<PostResponse>> CreateAsync(Post post)
+    + Task<ServiceResult<PostResponse>> EditAsync(Guid postId, Post post)
+    + Task DeleteAsync(Guid postId)
+    + Task AddCommentAsync(Guid postId, Comment comment)
+    + Task AddLikeAsync(Guid postId, User user)
+  }
+  
+  class FriendsService {
+    - FriendsRepository _friendsRepository
+    + Task FollowUserAsync(Guid followerId, Guid followedId)
+    + Task UnfollowUserAsync(Guid followerId, Guid followedId)
+  }
+}
+
+namespace SocialNetwork.Domain {
+  class User {
+    + Guid Id
+    + string Name
+    + string Email
+    + string Password
+  }
+
+  class Post {
+    + Guid Id
+    + string Content
+    + string Image
+    + DateTime CreatedAt
+  }
+  
+  class Comment {
+    + Guid Id
+    + string Content
+    + DateTime CreatedAt
+    + Post Post
+  }
+  
+  class Like {
+    + Guid Id
+    + User User
+    + Post Post
+  }
+}
+
+namespace SocialNetwork.Mappers.Responses {
+  class UserResponse {
+    + Guid Id
+    + string Name
+    + string Email
+    + static UserResponse FromDomain(User user)
+  }
+
+  class PostResponse {
+    + Guid Id
+    + string Content
+    + string Image
+    + DateTime CreatedAt
+    + static PostResponse FromDomain(Post post)
+  }
+}
+
+namespace SocialNetwork.Persistence.Repositories {
+  class UsersRepository {
+    - IDbConnectionFactory _dbConnectionFactory
+    + Task<User> RegisterAsync(User user)
+    + Task<User> GetByEmailAsync(string email)
+  }
+
+  class PostsRepository {
+    - IDbConnectionFactory _dbConnectionFactory
+    + Task<Post> CreateAsync(Post post)
+    + Task<Post> EditAsync(Guid postId, Post post)
+    + Task DeleteAsync(Guid postId)
+    + Task AddCommentAsync(Comment comment)
+    + Task AddLikeAsync(Like like)
+  }
+
+  class FriendsRepository {
+    - IDbConnectionFactory _dbConnectionFactory
+    + Task FollowUserAsync(Guid followerId, Guid followedId)
+    + Task UnfollowUserAsync(Guid followerId, Guid followedId)
+  }
+}
+namespace SocialNetwork.Persistence.Database {
+  class NpgsqlConnectionFactory implements IDbConnectionFactory {
+    - string _connectionString
+    + Task<IDbConnection> CreateConnectionAsync()
+  }
+
+  interface IDbConnectionFactory {
+    + Task<IDbConnection> CreateConnectionAsync()
+  }
+
+  class DbInitializer {
+    + static void Initialize(string connectionString)
+  }
+}
+
+namespace SocialNetwork.RequestPipeline {
+  class WebApplicationExtensions {
+    + WebApplication InitializeDatabase(WebApplication app)
+    + WebApplication UseGlobalErrorHandling(WebApplication app)
+  }
+}
+
+PostsController --> PostsService
+PostsService --> PostsRepository
+PostsService --> Comment
+PostsService --> Like
+
+UsersController --> UsersService
+UsersService --> UsersRepository
+
+FriendsController --> FriendsService
+FriendsService --> FriendsRepository
+
+CreateUserRequest --> User
+CreatePostRequest --> Post
+EditPostRequest --> Post
+CreateCommentRequest --> Comment
+
+UserResponse --> User
+PostResponse --> Post
+
+Comment --> Post
+Like --> Post
+Like --> User
+
+UsersRepository --> IDbConnectionFactory
+PostsRepository --> IDbConnectionFactory
+FriendsRepository --> IDbConnectionFactory
+WebApplicationExtensions --> DbInitializer
+
+@enduml
