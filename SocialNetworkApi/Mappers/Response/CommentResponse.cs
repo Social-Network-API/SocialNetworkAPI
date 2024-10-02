@@ -1,4 +1,4 @@
-using SocialNetwork.Domain;
+using SocialNetwork.Entities;
 
 namespace SocialNetwork.Mappers.Responses
 {

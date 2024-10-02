@@ -1,4 +1,4 @@
-using SocialNetwork.Domain;
+using SocialNetwork.Entities;
 using SocialNetwork.Persistence.Repositories;
 using SocialNetwork.Mappers.Responses;
 using SocialNetwork.Models;

@@ -1,14 +1,14 @@
-namespace SocialNetwork.Domain
+namespace SocialNetwork.Entities
 {
-    public class Post
+    public class Comment
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
+        public Guid PostId { get; set; }
         public Guid UserId { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string ImageUrl { get; set; }
 
-        public Post()
+        public Comment()
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;

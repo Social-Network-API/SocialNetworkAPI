@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - "**"
-    
+
 permissions: read-all
 
 jobs:
@@ -72,27 +72,22 @@ jobs:
             echo "❌ PR description must include an ID in the format: ID-20."
             exit 1
           fi
-
           if ! echo "$PR_BODY" | grep -q "https://trello.com/c/"; then
             echo "❌ PR description must include a Trello link."
             exit 1
           fi
-
           if ! echo "$PR_BODY" | grep -q "What did I do?"; then
             echo "❌ PR description must answer: What did I do?"
             exit 1
           fi
-
           if ! echo "$PR_BODY" | grep -q "Why did I do this?"; then
             echo "❌ PR description must answer: Why did I do this?"
             exit 1
           fi
-
           if ! echo "$PR_BODY" | grep -q "How did I do it?"; then
             echo "❌ PR description must answer: How did I do it?"
             exit 1
           fi
-
           echo "✅ Pull request description follows the correct format."
 
   check_branches_convention:
@@ -106,17 +101,3 @@ jobs:
           ignore: main,develop
           min_length: 4
           max_length: 50
-
-  check_commit_messages:
-  name: Conventional Commits Message
-  runs-on: ubuntu-latest
-
-  steps:
-    - uses: gsactions/commit-message-checker@v2
-      with:
-        pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+|Merge branch .+'
-        error: 'The commit message must have the following structure: <type>(?): <description>'
-        excludeDescription: 'true'
-        excludeTitle: 'true'
-        checkAllCommitMessages: 'true'
-        accessToken: ${{ secrets.GITHUB_TOKEN }}
