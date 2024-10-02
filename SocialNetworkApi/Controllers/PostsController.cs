@@ -35,7 +35,7 @@ namespace SocialNetwork.Controllers
         public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] EditPostRequest request)
         {
             var post = request.ToDomain();
-            var result = await _postsService.EditAsync(postId, post);
+            var result = await _postsService.UpdateAsync(postId, post);
 
             return result.Success
                 ? Ok(result.Data)
