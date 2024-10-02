@@ -12,12 +12,8 @@ namespace SocialNetwork.Persistence.DataBase
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Friend> Friends { get; set; } 
+        public DbSet<Comment> Comments { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Friend>()
-                .HasKey(f => new { f.UserId, f.FriendId }); 
-        }
     }
 }
 

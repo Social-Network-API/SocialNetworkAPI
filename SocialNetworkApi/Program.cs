@@ -11,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<PostsRepository>();
 builder.Services.AddScoped<PostsService>();
+builder.Services.AddScoped<CommentsService>();
+builder.Services.AddScoped<CommentsRepository>();
 
 builder.Services.AddControllers();
 

@@ -1,4 +1,4 @@
-using RestApi.Services.interfaces;
+using RestApi.Services.Interfaces;
 using SocialNetwork.Domain;
 using SocialNetwork.Mappers.Responses;
 using SocialNetwork.Persistence.Repositories;
@@ -31,7 +31,7 @@ namespace SocialNetwork.Services
                 : new ServiceResult<PostResponse> { Data = PostResponse.FromDomain(post), Success = true };
         }
 
-        public async Task<ServiceResult<PostResponse>> EditAsync(Guid postId, Post updatedPost)
+        public async Task<ServiceResult<PostResponse>> UpdateAsync(Guid postId, Post updatedPost)
         {
             var existingPost = await _postsRepository.GetByIdAsync(postId);
     
@@ -49,10 +49,10 @@ namespace SocialNetwork.Services
             return new ServiceResult<PostResponse> { Data = response, Success = true };
         }
 
-
-        public async Task DeleteAsync(Guid postId)
+        public async Task<ServiceResult> DeleteAsync(Guid postId)
         {
             await _postsRepository.DeleteAsync(postId);
+            return new ServiceResult { Success = true };
         }
 
         public async Task<ServiceResult<IEnumerable<PostResponse>>> GetUserPostsAsync(Guid userId)
