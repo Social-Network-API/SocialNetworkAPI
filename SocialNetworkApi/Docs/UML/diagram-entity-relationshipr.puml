@@ -10,7 +10,7 @@ entity "User" as User {
 entity "Post" as Post {
     + postID : int <<PK>>
     + content : string
-    + imageURL : string   // URL of the post image
+    + imageURL : string   
     + createdAt : datetime
 }
 
