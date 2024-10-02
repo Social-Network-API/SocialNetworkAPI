@@ -61,15 +61,15 @@ jobs:
           max_length: 50
 
   check_commit_messages:
-    name: Conventional Commits Message
-    runs-on: ubuntu-latest
+  name: Conventional Commits Message
+  runs-on: ubuntu-latest
 
-    steps:
-      - uses: gsactions/commit-message-checker@v2
-        with:
-          pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+'
-          error: 'The commit message must have the following structure: <type>(?): <description>'
-          excludeDescription: 'true'
-          excludeTitle: 'true'
-          checkAllCommitMessages: 'true'
-          accessToken: ${{ secrets.GITHUB_TOKEN }}
+  steps:
+    - uses: gsactions/commit-message-checker@v2
+      with:
+        pattern: '(?:feat|fix|chore|test|docs|refactor|revert|hotfix)(?:\(\w+\))?:\s[a-z]{1,2}.+|Merge branch .+'
+        error: 'The commit message must have the following structure: <type>(?): <description>'
+        excludeDescription: 'true'
+        excludeTitle: 'true'
+        checkAllCommitMessages: 'true'
+        accessToken: ${{ secrets.GITHUB_TOKEN }}
