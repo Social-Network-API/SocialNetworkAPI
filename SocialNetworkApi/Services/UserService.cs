@@ -1,38 +1,61 @@
+using RestApi.Services.interfaces;
 using SocialNetwork.Entities;
-using SocialNetworkApi.DataAccess.Repositories.Interfaces;
+using SocialNetwork.Mappers.Responses;
+using SocialNetwork.Persistence.Repositories;
+using SocialNetwork.Models;
 
-namespace SocialNetworkApi.Services;
-public class UserService : IUserService
+namespace SocialNetwork.Services;
+public class UserService : IService<User, UserResponse>
 {
-    private readonly IBaseRepository<User> _userRepository;
+    private readonly UserRepository _UsersRepository;
 
-    public UserService(IBaseRepository<User> userRepository)
+    public UserService(UserRepository UserRepository)
     {
-        _userRepository = userRepository;
+        _UsersRepository = UserRepository;
     }
 
-    public async Task<User> CreateUserAsync(User user)
+    public async Task<ServiceResult<UserResponse>> CreateAsync(User User)
     {
-        return await _userRepository.CreateAsync(user);
+        await _UsersRepository.CreateAsync(User);
+        var response = UserResponse.FromDomain(User);
+        return new ServiceResult<UserResponse> { Data = response, Success = true };
     }
 
-    public async Task<IList<User>> GetUsersAsync()
+    public async Task<ServiceResult<UserResponse>> GetByIdAsync(Guid UserId)
     {
-        return await _userRepository.GetAll();
+        var User = await _UsersRepository.GetByIdAsync(UserId);
+        return User is null
+            ? new ServiceResult<UserResponse> { Data = null, Success = false }
+            : new ServiceResult<UserResponse> { Data = UserResponse.FromDomain(User), Success = true };
     }
 
-    public async Task<User?> GetUserAsync(Guid id)
+    public async Task<ServiceResult<UserResponse>> EditAsync(Guid UserId, User updatedUser)
     {
-        return await _userRepository.GetById(id);
+        var existingUser = await _UsersRepository.GetByIdAsync(UserId);
+
+        if (existingUser == null)
+        {
+            return new ServiceResult<UserResponse> { Success = false };
+        }
+
+        existingUser.Name = updatedUser.Name;
+        existingUser.ProfilePicture = updatedUser.ProfilePicture;
+
+        await _UsersRepository.EditAsync(UserId, existingUser);
+
+        var response = UserResponse.FromDomain(existingUser);
+        return new ServiceResult<UserResponse> { Data = response, Success = true };
+
     }
 
-    public async Task<bool> UpdateUserAsync(Guid id, User updatedUser)
+    public async Task DeleteAsync(Guid UserId)
     {
-        return await _userRepository.UpdateAsync(id, updatedUser);
+        await _UsersRepository.DeleteAsync(UserId);
     }
 
-    public async Task<bool> DeleteUserAsync(Guid id)
+    public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _userRepository.DeleteAsync(id);
+        return await _UsersRepository.GetAllAsync(); // Llama al método en el repositorio
     }
+
 }
