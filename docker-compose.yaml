@@ -10,6 +10,7 @@ services:
       POSTGRES_PASSWORD: ecliptic
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./SocialNetworkApi/Persistence/DataBase/Script:/docker-entrypoint-initdb.d/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U socialuser -d social"]
       interval: 5s
@@ -22,7 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports: 
-      - "5001:5001"
+      - "5005:5005"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=social;Username=socialuser;Password=ecliptic
@@ -39,14 +40,6 @@ services:
     depends_on:
       - database  
 
-  swagger:
-    image: swaggerapi/swagger-ui
-    ports:
-    - "8080:8080" 
-    depends_on:
-      - socialapp
-    environment:
-      - SWAGGER_JSON=/api/swagger/v1/swagger.json
 
 volumes:
   postgres_data: {}
