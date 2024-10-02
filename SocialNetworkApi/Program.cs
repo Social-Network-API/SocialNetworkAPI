@@ -13,6 +13,8 @@ builder.Services.AddScoped<PostsRepository>();
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CommentsService>();
+builder.Services.AddScoped<CommentsRepository>();
 
 builder.Services.AddControllers();
 

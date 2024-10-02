@@ -44,7 +44,7 @@ namespace SocialNetwork.Services
         public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] EditUserRequest request)
         {
             var user = request.ToDomain();
-            var result = await _userService.EditAsync(userId, user);
+            var result = await _userService.UpdateAsync(userId, user);
 
             return result.Success
                 ? Ok(result.Data)
