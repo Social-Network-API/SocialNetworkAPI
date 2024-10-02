@@ -1,8 +1,8 @@
-using RestApi.Services.interfaces;
 using SocialNetwork.Entities;
 using SocialNetwork.Mappers.Responses;
 using SocialNetwork.Persistence.Repositories;
 using SocialNetwork.Models;
+using RestApi.Services.Interfaces;
 
 namespace SocialNetwork.Services;
 public class UserService : IService<User, UserResponse>
@@ -29,7 +29,7 @@ public class UserService : IService<User, UserResponse>
             : new ServiceResult<UserResponse> { Data = UserResponse.FromDomain(User), Success = true };
     }
 
-    public async Task<ServiceResult<UserResponse>> EditAsync(Guid UserId, User updatedUser)
+    public async Task<ServiceResult<UserResponse>> UpdateAsync(Guid UserId, User updatedUser)
     {
         var existingUser = await _UsersRepository.GetByIdAsync(UserId);
 
@@ -48,14 +48,15 @@ public class UserService : IService<User, UserResponse>
 
     }
 
-    public async Task DeleteAsync(Guid UserId)
+    public async Task<ServiceResult> DeleteAsync(Guid UserId)
     {
         await _UsersRepository.DeleteAsync(UserId);
+        return new ServiceResult { Success = true };
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _UsersRepository.GetAllAsync(); // Llama al método en el repositorio
+        return await _UsersRepository.GetAllAsync(); 
     }
 
 }
