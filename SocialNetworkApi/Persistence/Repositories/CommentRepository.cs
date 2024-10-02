@@ -1,4 +1,4 @@
-using SocialNetwork.Domain;
+using SocialNetwork.Entities;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Persistence.DataBase;
 
