@@ -5,7 +5,7 @@ using SocialNetwork.Services;
 namespace SocialNetwork.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/posts")]
     public class PostsController(PostsService postsService) : ControllerBase
     {
         private readonly PostsService _postsService = postsService;
