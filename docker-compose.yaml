@@ -10,7 +10,6 @@ services:
       POSTGRES_PASSWORD: ecliptic
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./SocialNetworkApi/Persistence/DataBase/Script:/docker-entrypoint-initdb.d/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U socialuser -d social"]
       interval: 5s
