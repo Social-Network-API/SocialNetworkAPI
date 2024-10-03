@@ -26,46 +26,42 @@ public class UserController : ControllerBase
         );
     }
 
-    // Obtener usuario por ID
-    [HttpGet]
-    [Route("users/{userId:guid}")]
-    public async Task<IActionResult> GetUserById(Guid userId)
-    {
-        var result = await _userService.GetByIdAsync(userId);
-        return result.Data is null
-            ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"User not found (userId {userId})")
-            : Ok(result.Data);
-    }
+        [HttpGet]
+        [Route("users/{userId:guid}")]
+        public async Task<IActionResult> GetUserById(Guid userId)
+        {
+            var result = await _userService.GetByIdAsync(userId);
+            return result.Data is null
+                ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"User not found (userId {userId})")
+                : Ok(result.Data);
+        }
 
-    // Actualizar un usuario
-    [HttpPut]
-    [Route("users/{userId:guid}")]
-    public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] EditUserRequest request)
-    {
-        var user = request.ToDomain();
-        var result = await _userService.UpdateAsync(userId, user);
+        [HttpPut]
+        [Route("users/{userId:guid}")]
+        public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] EditUserRequest request)
+        {
+            var user = request.ToDomain();
+            var result = await _userService.UpdateAsync(userId, user);
 
         return result.Success
             ? Ok(result.Data)
             : Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Failed to update user");
     }
 
-    // Eliminar un usuario
-    [HttpDelete]
-    [Route("users/{userId:guid}")]
-    public async Task<IActionResult> DeleteUser(Guid userId)
-    {
-        await _userService.DeleteAsync(userId);
-        return NoContent();
-    }
+        [HttpDelete]
+        [Route("users/{userId:guid}")]
+        public async Task<IActionResult> DeleteUser(Guid userId)
+        {
+            await _userService.DeleteAsync(userId);
+            return NoContent();
+        }
 
-    // Obtener todos los usuarios
-    [HttpGet]
-    [Route("users")]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        var users = await _userService.GetAllAsync(); // Usamos el nuevo método
-        var userResponses = users.Select(UserResponse.FromDomain); // Mapeamos a UserResponse
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllAsync(); 
+            var userResponses = users.Select(UserResponse.FromDomain); 
 
         return Ok(userResponses);
     }
