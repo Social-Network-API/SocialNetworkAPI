@@ -71,9 +71,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchUsers([FromQuery] string query)
+    public async Task<IActionResult> SearchUsers([FromQuery] string searchUserByName)
     {
-        var result = await _userService.SearchUsersAsync(query);
+        var result = await _userService.SearchUsersAsync(searchUserByName);
 
         if (result == null || !result.Any())
             return NotFound(new { message = "No results found." });
