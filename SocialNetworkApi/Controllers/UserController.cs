@@ -2,30 +2,29 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.Mappers.Requests;
 using SocialNetwork.Mappers.Responses;
 
-namespace SocialNetwork.Services
+namespace SocialNetwork.Services;
+[ApiController]
+[Route("api/v1/users")]
+public class UserController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/users")]
-    public class UserController : ControllerBase
+    private readonly UserService _userService;
+
+    public UserController(UserService userService)
     {
-        private readonly UserService _userService;
+        _userService = userService;
+    }
 
-        public UserController(UserService userService)
-        {
-            _userService = userService;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
-        {
-            var user = request.ToDomain();
-            var response = await _userService.CreateAsync(user);
-            return CreatedAtAction(
-                actionName: nameof(GetUserById),
-                routeValues: new { userId = user.UserId },
-                value: response.Data
-            );
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+    {
+        var user = request.ToDomain();
+        var response = await _userService.CreateAsync(user);
+        return CreatedAtAction(
+            actionName: nameof(GetUserById),
+            routeValues: new { userId = user.UserId },
+            value: response.Data
+        );
+    }
 
         [HttpGet]
         [Route("users/{userId:guid}")]
@@ -44,10 +43,10 @@ namespace SocialNetwork.Services
             var user = request.ToDomain();
             var result = await _userService.UpdateAsync(userId, user);
 
-            return result.Success
-                ? Ok(result.Data)
-                : Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Failed to update user");
-        }
+        return result.Success
+            ? Ok(result.Data)
+            : Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Failed to update user");
+    }
 
         [HttpDelete]
         [Route("users/{userId:guid}")]
@@ -64,7 +63,17 @@ namespace SocialNetwork.Services
             var users = await _userService.GetAllAsync(); 
             var userResponses = users.Select(UserResponse.FromDomain); 
 
-            return Ok(userResponses);
-        }
+        return Ok(userResponses);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchUsers([FromQuery] string searchUserByName)
+    {
+        var result = await _userService.SearchUsersAsync(searchUserByName);
+
+        if (result == null || !result.Any())
+            return NotFound(new { message = "No results found." });
+
+        return Ok(result);
     }
 }
