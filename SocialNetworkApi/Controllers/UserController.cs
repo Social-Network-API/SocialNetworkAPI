@@ -27,7 +27,6 @@ namespace SocialNetwork.Services
             );
         }
 
-        // Obtener usuario por ID
         [HttpGet]
         [Route("users/{userId:guid}")]
         public async Task<IActionResult> GetUserById(Guid userId)
@@ -38,7 +37,6 @@ namespace SocialNetwork.Services
                 : Ok(result.Data);
         }
 
-        // Actualizar un usuario
         [HttpPut]
         [Route("users/{userId:guid}")]
         public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] EditUserRequest request)
@@ -51,7 +49,6 @@ namespace SocialNetwork.Services
                 : Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Failed to update user");
         }
 
-        // Eliminar un usuario
         [HttpDelete]
         [Route("users/{userId:guid}")]
         public async Task<IActionResult> DeleteUser(Guid userId)
@@ -60,13 +57,12 @@ namespace SocialNetwork.Services
             return NoContent();
         }
 
-        // Obtener todos los usuarios
         [HttpGet]
         [Route("users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllAsync(); // Usamos el nuevo método
-            var userResponses = users.Select(UserResponse.FromDomain); // Mapeamos a UserResponse
+            var users = await _userService.GetAllAsync(); 
+            var userResponses = users.Select(UserResponse.FromDomain); 
 
             return Ok(userResponses);
         }
