@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Entities;
 using SocialNetwork.Persistence.DataBase;
 using SocialNetwork.Persistence.Repositories;
 using SocialNetwork.Services;
@@ -15,6 +16,8 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CommentsService>();
 builder.Services.AddScoped<CommentsRepository>();
+builder.Services.AddScoped<LikeRepository>();
+builder.Services.AddScoped<LikeService>();
 
 builder.Services.AddControllers();
 
