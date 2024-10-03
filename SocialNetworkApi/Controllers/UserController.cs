@@ -41,7 +41,7 @@ namespace SocialNetwork.Services
         // Actualizar un usuario
         [HttpPut]
         [Route("users/{userId:guid}")]
-        public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] EditUserRequest request)
+        public async Task<IActionResult> Edit([FromRoute] Guid userId, [FromBody] UpdateUserResponse request)
         {
             var user = request.ToDomain();
             var result = await _userService.UpdateAsync(userId, user);
