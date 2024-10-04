@@ -1,5 +1,4 @@
 using SocialNetwork.Entities;
-using SocialNetwork.Persistence.DataBase;
 
 namespace SocialNetwork.Mappers.Requests;
 public record CreatePostRequest(Guid UserId, string Content, string ImageUrl)

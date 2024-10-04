@@ -1,3 +1,4 @@
+using SocialNetworkApi.DependencyInjection;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,21 +10,14 @@ using SocialNetworkApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services
+    .AddSocialNetworkServices()
+    .AddSocialNetworkRepositories(builder.Configuration)
+    .AddSocialNetworkDbContext(builder.Configuration)
+    .AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<PostsRepository>();
-builder.Services.AddScoped<PostsService>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<CommentsService>();
-builder.Services.AddScoped<CommentsRepository>();
-builder.Services.AddScoped<IAuthService>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration); 
-
-builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -45,8 +39,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-var app = builder.Build();
+builder.Services.AddControllers();
 
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -59,8 +54,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); 
-app.UseAuthorization();
-app.MapControllers();
 
+app.MapControllers();
 app.Run();

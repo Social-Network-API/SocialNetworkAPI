@@ -1,7 +1,7 @@
 using SocialNetwork.Entities;
 
 namespace SocialNetwork.Mappers.Requests;
-public record EditUserRequest(string Name, string ProfilePicture)
+public record UpdateUserResponse(string Name, string ProfilePicture)
 {
     public User ToDomain()
     {

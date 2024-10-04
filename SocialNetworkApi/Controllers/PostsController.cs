@@ -32,7 +32,7 @@ namespace SocialNetwork.Controllers
         }
 
         [HttpPut("{postId:guid}")]
-        public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] EditPostRequest request)
+        public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] UpdatePostResponse request)
         {
             var post = request.ToDomain();
             var result = await _postsService.UpdateAsync(postId, post);

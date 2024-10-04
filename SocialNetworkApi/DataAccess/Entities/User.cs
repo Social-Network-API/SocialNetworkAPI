@@ -8,7 +8,7 @@ public class User
     public string Password { get; set; }
     public required string ProfilePicture { get; set; }
     public DateTime CreatedAt { get; set; }
-
+    
     public User()
     {
         UserId = Guid.NewGuid();

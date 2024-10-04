@@ -56,7 +56,13 @@ public class UserService : IService<User, UserResponse>
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _UsersRepository.GetAllAsync(); 
+        return await _UsersRepository.GetAllAsync();
+    }
+
+    public async Task<IEnumerable<UserResponse>> SearchUsersAsync(string searchTerm)
+    {
+        var users = await _UsersRepository.SearchAsync(searchTerm);
+        return users.Select(UserResponse.FromDomain);
     }
 
 }
