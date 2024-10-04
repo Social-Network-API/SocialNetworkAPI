@@ -52,5 +52,12 @@ namespace SocialNetwork.Persistence.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<Comment>> GetCommentsForPostAsync(Guid postId)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.PostId == postId)
+                .OrderBy(c => c.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
