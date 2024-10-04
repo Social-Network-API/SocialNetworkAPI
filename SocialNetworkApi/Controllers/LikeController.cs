@@ -19,7 +19,11 @@ public class LikeController : ControllerBase
     public async Task<IActionResult> Create(Guid postId, [FromBody] CreateLikeRequest request)
     {
         var like = request.ToDomain();
-        like.PostId = postId; 
+        like.PostId = postId;
+        var userExists = await _likeService.CheckIfUserExistsAsync(like.UserId);
+        if (!userExists)
+            return BadRequest($"User with ID {like.UserId} does not exist.");
+
         var result = await _likeService.CreateAsync(like);
         return CreatedAtAction(nameof(GetLikesByPostId), new { postId }, result.Data);
     }
