@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.RequestPipeline
+namespace SocialNetworkApi.RequestPipeline
 {
     public static class WebApplicationExtensions
     {

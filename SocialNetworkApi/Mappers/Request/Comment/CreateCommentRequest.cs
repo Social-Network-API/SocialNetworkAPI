@@ -1,17 +1,14 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Mappers.Request.Comment;
 
-namespace SocialNetwork.Mappers.Requests
+public record CreateCommentRequest(Guid UserId, string Content)
 {
-    public record CreateCommentRequest(Guid UserId, string Content)
+    public DataAccess.Entities.Comment ToDomain(Guid PostId)
     {
-        public Comment ToDomain(Guid postId)
+        return new DataAccess.Entities.Comment
         {
-            return new Comment
-            {
-                PostId = postId,
-                UserId = UserId,
-                Content = Content
-            };
-        }
+            PostId = PostId,
+            UserId = UserId,
+            Content = Content
+        };
     }
 }

@@ -1,6 +1,7 @@
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetworkApi.Services;
+namespace SocialNetworkApi.Business.Services.Interfaces;
+
 public interface IUserService
 {
     Task<User> CreateUserAsync(User user);

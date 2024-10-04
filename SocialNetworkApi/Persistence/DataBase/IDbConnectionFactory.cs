@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace SocialNetwork.Persistence.DataBase;
+namespace SocialNetworkApi.Persistence.DataBase;
 
 public interface IDbConnectionFactory
 {

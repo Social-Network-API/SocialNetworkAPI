@@ -1,4 +1,5 @@
-namespace SocialNetwork.Entities;
+namespace SocialNetworkApi.DataAccess.Entities;
+
 public class Post
 {
     public Guid Id { get; init; }

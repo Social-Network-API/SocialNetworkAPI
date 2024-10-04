@@ -1,6 +1,7 @@
 using System.Data;
 using Npgsql;
-namespace SocialNetwork.Persistence.DataBase;
+
+namespace SocialNetworkApi.Persistence.DataBase;
 
 public class NpgsqlConnectionFactory(string connectionString) : IDbConnectionFactory
 {

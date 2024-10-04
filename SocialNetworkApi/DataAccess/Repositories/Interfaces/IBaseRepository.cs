@@ -1,4 +1,5 @@
 namespace SocialNetworkApi.DataAccess.Repositories.Interfaces;
+
 public interface IBaseRepository<T>
 {
     Task<T> CreateAsync(T entity);

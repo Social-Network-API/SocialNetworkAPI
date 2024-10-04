@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Mappers.Request.User;
 
-namespace SocialNetwork.Mappers.Requests;
 public record CreateUserRequest(string name, string email, string password, string profileUser)
 {
-    public User ToDomain()
+    public DataAccess.Entities.User ToDomain()
     {
-        return new User
+        return new DataAccess.Entities.User
         {
             UserId = Guid.NewGuid(),
             Name = name,

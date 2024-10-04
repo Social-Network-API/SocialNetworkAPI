@@ -1,12 +1,11 @@
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Mappers.Responses
+namespace SocialNetworkApi.Mappers.Response;
+
+public record CommentResponse(Guid CommentId, Guid UserId, string Content, DateTime CreatedAt)
 {
-    public record CommentResponse(Guid CommentId, Guid PostId, Guid UserId, string Content, DateTime CreatedAt)
+    public static CommentResponse FromDomain(Comment comment)
     {
-        public static CommentResponse FromDomain(Comment comment)
-        {
-            return new CommentResponse(comment.Id, comment.PostId, comment.UserId, comment.Content, comment.CreatedAt);
-        }
+        return new CommentResponse(comment.Id, comment.UserId, comment.Content, comment.CreatedAt);
     }
 }

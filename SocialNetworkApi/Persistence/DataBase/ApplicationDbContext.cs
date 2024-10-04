@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Persistence.DataBase;
+namespace SocialNetworkApi.Persistence.DataBase;
 
 public class ApplicationDbContext : DbContext
 {
@@ -18,7 +18,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Friend>()
-            .HasKey(f => new { f.UserId, f.FriendId });
+            .HasKey(f => new { f.UserId, f.FriendId }); 
     }
 }
 

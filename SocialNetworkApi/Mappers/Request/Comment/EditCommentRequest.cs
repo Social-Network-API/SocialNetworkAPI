@@ -1,16 +1,14 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Mappers.Request.Comment;
 
-namespace SocialNetwork.Mappers.Requests
+public record EditCommentRequest(string Content)
 {
-    public record EditCommentRequest(string Content)
+    public DataAccess.Entities.Comment ToDomain()
     {
-        public Comment ToDomain()
+        return new DataAccess.Entities.Comment 
         {
-            return new Comment
-            {
-                Content = Content,
-                CreatedAt = DateTime.UtcNow
-            };
-        }
+            Content = Content,
+            CreatedAt = DateTime.UtcNow 
+        };
     }
 }
+

@@ -1,12 +1,11 @@
-using SocialNetwork.Entities;
-using SocialNetwork.Persistence.Repositories;
-using SocialNetwork.Mappers.Responses;
-using SocialNetwork.Models;
-using RestApi.Services.Interfaces;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.DataAccess.Repositories.Concretes;
+using SocialNetworkApi.Mappers.Response;
+using SocialNetworkApi.Models;
+using SocialNetworkApi.Services.Interface;
 
-namespace SocialNetwork.Services
-{
-    public class CommentsService : IService<Comment, CommentResponse>
+namespace SocialNetworkApi.Services;
+ public class CommentsService : IService<Comment, CommentResponse>
     {
         private readonly CommentsRepository _commentsRepository;
 
@@ -45,12 +44,12 @@ namespace SocialNetwork.Services
 
             var response = CommentResponse.FromDomain(existingComment);
             return new ServiceResult<CommentResponse> { Data = response, Success = true };
-        }
-
+        } 
         public async Task<ServiceResult> DeleteAsync(Guid commentId)
         {
             await _commentsRepository.DeleteAsync(commentId);
-            return new ServiceResult { Success = true };
+            return new ServiceResult { Success = true }; 
         }
-    }
 }
+
+   

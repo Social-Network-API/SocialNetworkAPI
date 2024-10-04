@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Mappers.Request.Post;
 
-namespace SocialNetwork.Mappers.Requests;
 public record EditPostRequest(string Content, string ImageUrl)
 {
-    public Post ToDomain()
+    public DataAccess.Entities.Post ToDomain()
     {
-        return new Post
+        return new DataAccess.Entities.Post
         {
             Content = Content,
             ImageUrl = ImageUrl

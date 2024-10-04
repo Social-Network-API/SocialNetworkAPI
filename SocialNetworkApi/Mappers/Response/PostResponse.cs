@@ -1,6 +1,7 @@
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Mappers.Responses;
+namespace SocialNetworkApi.Mappers.Response;
+
 public record PostResponse(Guid Id, Guid UserId, string Content, string ImageUrl, DateTime CreatedAt)
 {
     public static PostResponse FromDomain(Post post)

@@ -1,4 +1,4 @@
-﻿namespace SocialNetwork.Models;
+﻿namespace SocialNetworkApi.Models;
 
 public class ValidationResponse
 {
