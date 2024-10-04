@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkApi.Mappers.Request.Auth;
 using SocialNetworkApi.Services;
+using SocialNetworkApi.Mappers.Request.Auth;
 
 namespace SocialNetworkApi.Controllers;
 
@@ -32,14 +32,31 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var token = await _authService.LoginAsync(request);
             return Ok(new { token });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new { message = "Invalid email or password." });
         }
+
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] string token)
+    {
+        var tokenExists = await _authService.LogoutAsync(token);
+        if (!tokenExists)
+            return BadRequest(new { message = "Invalid token." });
+
+        return Ok(new { message = "Logged out successfully." });
+
     }
 }
