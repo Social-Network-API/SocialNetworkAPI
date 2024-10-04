@@ -57,7 +57,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("allusers")]
+    [Route("getAllUsers")]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllAsync();
