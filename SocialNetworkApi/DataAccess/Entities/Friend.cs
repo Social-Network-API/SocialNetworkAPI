@@ -1,4 +1,4 @@
-namespace SocialNetwork.Entities;
+namespace SocialNetworkApi.DataAccess.Entities;
 
 public class Friend
 {
