@@ -21,12 +21,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Friend>()
             .HasKey(f => new { f.UserId, f.FriendId });
 
-        modelBuilder.Entity<User>()
-                .HasMany(u => u.LikedPosts)
-                .WithMany(p => p.LikedByUsers)
-                .UsingEntity(j => j.ToTable("UserLikes"));
-        
-        base.OnModelCreating(modelBuilder);
     }
 }
 
