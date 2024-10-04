@@ -65,4 +65,14 @@ public class UserRepository
             .OrderBy(u => u.Name)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Post>> GetUserLikesAsync(Guid userId)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.LikedPosts)
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+
+        return user?.LikedPosts ?? new List<Post>();
+    }
+
 }

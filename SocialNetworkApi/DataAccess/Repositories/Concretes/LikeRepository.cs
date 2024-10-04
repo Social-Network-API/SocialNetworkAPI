@@ -37,14 +37,6 @@ public class LikeRepository
             .ToListAsync();
     }
 
-
-    public async Task<IEnumerable<Like>> GetUserLikesAsync(Guid userId)
-    {
-        return await _dbContext.Likes
-            .Where(l => l.UserId == userId)
-            .ToListAsync();
-    }
-
     public async Task<Like?> GetByIdAsync(Guid likeId)
     {
         var like = await _dbContext.Likes.FindAsync(likeId);
