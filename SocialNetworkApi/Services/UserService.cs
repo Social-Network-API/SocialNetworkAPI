@@ -59,6 +59,12 @@ public class UserService : IService<User, UserResponse>
         return await _UsersRepository.GetAllAsync();
     }
 
+    public async Task<IEnumerable<UserResponse>> SearchUsersAsync(string searchTerm)
+    {
+        var users = await _UsersRepository.SearchAsync(searchTerm);
+        return users.Select(UserResponse.FromDomain);
+    }
+
     public async Task<ServiceResult<IEnumerable<Post>>> GetUserLikesAsync(Guid userId)
     {
         var likedPosts = await _UsersRepository.GetUserLikesAsync(userId);

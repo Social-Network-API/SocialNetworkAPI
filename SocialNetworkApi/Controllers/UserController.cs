@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("users/{userId:guid}")]
+    [Route("{userId:guid}")]
     public async Task<IActionResult> GetUserById(Guid userId)
     {
         var result = await _userService.GetByIdAsync(userId);
@@ -64,6 +64,17 @@ public class UserController : ControllerBase
         var userResponses = users.Select(UserResponse.FromDomain);
 
         return Ok(userResponses);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchUsers([FromQuery] string searchUserByName)
+    {
+        var result = await _userService.SearchUsersAsync(searchUserByName);
+
+        if (result == null || !result.Any())
+            return NotFound(new { message = "No results found." });
+
+        return Ok(result);
     }
 
     [HttpGet]
