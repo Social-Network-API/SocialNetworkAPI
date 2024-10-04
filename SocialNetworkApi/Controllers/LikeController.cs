@@ -38,14 +38,4 @@ public class LikeController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpGet("posts")]
-    public async Task<IActionResult> GetLikesByUserId(Guid userId)
-    {
-        var result = await _likeService.GetLikesByUserIdAsync(userId);
-        if (!result.Success)
-        {
-            return NotFound();
-        }
-        return Ok(result.Data);
-    }
 }
