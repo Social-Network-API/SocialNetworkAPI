@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.Models;
 using SocialNetworkApi.Persistence.DataBase;
 
 namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
@@ -27,21 +28,25 @@ public class CommentsRepository
             .ToListAsync();
     }
 
-    public async Task<Comment> GetByIdAsync(Guid commentId) 
+    public async Task<ServiceResult<Comment>> GetByIdAsync(Guid commentId) 
     {
-        return await _dbContext.Comments.FindAsync(commentId);
+        var comment = await _dbContext.Comments.FindAsync(commentId);
+        return comment == null 
+            ? new ServiceResult<Comment> { Success = false }
+            : new ServiceResult<Comment> { Data = comment, Success = true };
     }
 
-    public async Task<Comment> UpdateAsync(Guid commentId, Comment updatedComment)
+    public async Task<ServiceResult<Comment>> UpdateAsync(Guid commentId, Comment updatedComment)
     {
         var existingComment = await _dbContext.Comments.FindAsync(commentId);
         if (existingComment == null)
-            return null;
+            return new ServiceResult<Comment> { Success = false };
 
         existingComment.Content = updatedComment.Content;
         await _dbContext.SaveChangesAsync();
-        return existingComment;
+        return new ServiceResult<Comment> { Data = existingComment, Success = true };
     }
+
 
     public async Task DeleteAsync(Guid commentId)
     {

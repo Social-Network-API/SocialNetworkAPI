@@ -52,7 +52,6 @@ public class FriendsRepository
         await _dbContext.SaveChangesAsync();
     }
 
-
     public async Task<IEnumerable<User>> GetFriendsListAsync(Guid userId)
     {
         return await _dbContext.Friends

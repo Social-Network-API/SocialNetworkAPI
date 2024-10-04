@@ -20,8 +20,15 @@ public class CommentsController : ControllerBase
     {
         var comment = request.ToDomain(postId);
         var result = await _commentService.CreateAsync(comment);
+
+        if (!result.Success || result.Data == null)
+        {
+            return BadRequest("Failed to create comment.");
+        }
+
         return CreatedAtAction(nameof(GetAllComments), new { postId, commentId = result.Data.CommentId }, result.Data);
     }
+
 
     [HttpGet]
     public async Task<IActionResult> GetAllComments([FromRoute] Guid postId)
