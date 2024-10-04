@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkApi.Mappers.Request.Post;
+using SocialNetworkApi.Business.Mappers.Request.Post;
 using SocialNetworkApi.Services;
 
 namespace SocialNetworkApi.Controllers;
@@ -32,7 +32,7 @@ public class PostsController(PostsService postsService) : ControllerBase
     }
 
     [HttpPut("{postId:guid}")]
-    public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] EditPostRequest request)
+    public async Task<IActionResult> Edit([FromRoute] Guid postId, [FromBody] UpdatePostResponse request)
     {
         var post = request.ToDomain();
         var result = await _postsService.UpdateAsync(postId, post);

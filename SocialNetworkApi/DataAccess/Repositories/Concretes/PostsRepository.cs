@@ -62,10 +62,18 @@ public class PostsRepository
 
     public async Task<IEnumerable<Post>> GetHomePostsAsync(Guid userId)
     {
+        var followedUserIds = await _dbContext.Followers
+            .Where(f => f.FollowerId == userId)
+            .Select(f => f.FollowedId)
+            .ToListAsync();
+
+        followedUserIds.Add(userId); 
+    
         return await _dbContext.Posts
-            .Where(p => p.UserId == userId || 
-                        _dbContext.Friends.Any(f => f.UserId == userId && f.FriendId == p.UserId))
+            .Where(p => followedUserIds.Contains(p.UserId))
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
+
+
 }

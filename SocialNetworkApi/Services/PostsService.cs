@@ -1,6 +1,6 @@
+using SocialNetworkApi.Business.Mappers.Response;
 using SocialNetworkApi.DataAccess.Entities;
 using SocialNetworkApi.DataAccess.Repositories.Concretes;
-using SocialNetworkApi.Mappers.Response;
 using SocialNetworkApi.Models;
 using SocialNetworkApi.Services.Interface;
 
@@ -8,13 +8,13 @@ namespace SocialNetworkApi.Services;
 public class PostsService : IService<Post, PostResponse>
 {
     private readonly PostsRepository _postsRepository;
-    private readonly FriendsRepository _friendsRepository;
+    private readonly FollowRepository _followRepository;
     private readonly CommentsRepository _commentsRepository;
 
-    public PostsService(PostsRepository postsRepository, FriendsRepository friendsRepository, CommentsRepository commentsRepository)
+    public PostsService(PostsRepository postsRepository, FollowRepository followRepository, CommentsRepository commentsRepository)
     {
         _postsRepository = postsRepository;
-        _friendsRepository = friendsRepository;
+        _followRepository = followRepository;
         _commentsRepository = commentsRepository;
     }
 
@@ -68,26 +68,32 @@ public class PostsService : IService<Post, PostResponse>
     {
         var posts = await _postsRepository.GetHomePostsAsync(userId);
         var friendPosts = posts
-            .Where(p => p.UserId == userId || _friendsRepository.AreFriendsAsync(userId, p.UserId).Result)
+            .Where(p => p.UserId == userId || _followRepository.AreFriendsAsync(userId, p.UserId).Result)
             .OrderByDescending(p => p.CreatedAt);
 
         var response = friendPosts.Select(PostResponse.FromDomain);
         return new ServiceResult<IEnumerable<PostResponse>> { Data = response, Success = true };
     }
+    
     public async Task<ServiceResult<IEnumerable<PostWithCommentsResponse>>> GetHomePostsWithCommentsAsync(Guid userId)
     {
         var posts = await _postsRepository.GetHomePostsAsync(userId);
+    
+        var postIds = posts.Select(p => p.Id).ToList();
+        var comments = await _commentsRepository.GetCommentsForPostsAsync(postIds);
+    
+        var commentsGrouped = comments.GroupBy(c => c.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
-        var postsWithComments = new List<PostWithCommentsResponse>();
-
-        foreach (var post in posts)
+        var postsWithComments = posts.Select(post => 
         {
-            var comments = await _commentsRepository.GetCommentsForPostAsync(post.Id);
-            var postWithComments = PostWithCommentsResponse.FromDomain(post, comments);
-            postsWithComments.Add(postWithComments);
-        }
+            var commentsForPost = commentsGrouped.ContainsKey(post.Id) ? commentsGrouped[post.Id] : new List<Comment>();
+            return PostWithCommentsResponse.FromDomain(post, commentsForPost);
+        }).ToList();
 
         return new ServiceResult<IEnumerable<PostWithCommentsResponse>> { Data = postsWithComments, Success = true };
     }
+
 }
+
 

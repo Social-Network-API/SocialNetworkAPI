@@ -1,6 +1,6 @@
-namespace SocialNetworkApi.Mappers.Request.Post;
+namespace SocialNetworkApi.Business.Mappers.Request.Post;
 
-public record EditPostRequest(string Content, string ImageUrl)
+public record UpdatePostResponse(string Content, string ImageUrl)
 {
     public DataAccess.Entities.Post ToDomain()
     {

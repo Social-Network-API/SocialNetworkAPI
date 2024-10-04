@@ -1,6 +1,6 @@
+using SocialNetworkApi.Business.Mappers.Response;
 using SocialNetworkApi.DataAccess.Entities;
 using SocialNetworkApi.DataAccess.Repositories.Concretes;
-using SocialNetworkApi.Mappers.Response;
 using SocialNetworkApi.Models;
 using SocialNetworkApi.Services.Interface;
 

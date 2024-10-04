@@ -1,6 +1,6 @@
-namespace SocialNetworkApi.Mappers.Request.User;
+namespace SocialNetworkApi.Business.Mappers.Request.User;
 
-public record EditUserRequest(string Name, string ProfilePicture)
+public record UpdateUserResponse(string Name, string ProfilePicture)
 {
     public DataAccess.Entities.User ToDomain()
     {

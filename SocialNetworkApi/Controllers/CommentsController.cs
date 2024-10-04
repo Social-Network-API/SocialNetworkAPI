@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkApi.Mappers.Request.Comment;
+using SocialNetworkApi.Business.Mappers.Request.Comment;
 using SocialNetworkApi.Services;
 
 namespace SocialNetworkApi.Controllers;
@@ -42,7 +42,7 @@ public class CommentsController : ControllerBase
     }
     
     [HttpPut("{commentId:guid}")]
-    public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] EditCommentRequest request)
+    public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] UpdateCommentResponse request)
     {
         var comment = request.ToDomain();
         var result = await _commentService.UpdateAsync(commentId , comment);
@@ -58,4 +58,3 @@ public class CommentsController : ControllerBase
         return NoContent(); 
     }
 }
-

@@ -1,6 +1,6 @@
 using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetworkApi.Mappers.Response;
+namespace SocialNetworkApi.Business.Mappers.Response;
 
 public record PostResponse(Guid Id, Guid UserId, string Content, string ImageUrl, DateTime CreatedAt)
 {

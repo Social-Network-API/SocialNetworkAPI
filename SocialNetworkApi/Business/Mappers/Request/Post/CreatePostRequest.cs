@@ -1,4 +1,4 @@
-namespace SocialNetworkApi.Mappers.Request.Post;
+namespace SocialNetworkApi.Business.Mappers.Request.Post;
 
 public record CreatePostRequest(Guid UserId, string Content, string ImageUrl)
 {

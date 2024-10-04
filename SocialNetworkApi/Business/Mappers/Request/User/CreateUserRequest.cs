@@ -1,4 +1,4 @@
-namespace SocialNetworkApi.Mappers.Request.User;
+namespace SocialNetworkApi.Business.Mappers.Request.User;
 
 public record CreateUserRequest(string name, string email, string password, string profileUser)
 {

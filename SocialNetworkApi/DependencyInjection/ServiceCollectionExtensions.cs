@@ -12,8 +12,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PostsService>();
         services.AddScoped<UserService>();
         services.AddScoped<CommentsService>();
-        services.AddScoped<FriendService>();
-
+        services.AddScoped<FollowService>();
+        services.AddScoped<LikeService>();
         return services;
     }
 
@@ -22,9 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserRepository>();
         services.AddScoped<CommentsRepository>();
         services.AddScoped<PostsRepository>();
-        services.AddScoped<FriendsRepository>();
-
-
+        services.AddScoped<FollowRepository>();
+        services.AddScoped<LikeRepository>();
         return services;
     }
 

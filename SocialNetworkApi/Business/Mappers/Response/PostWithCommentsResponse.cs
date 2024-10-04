@@ -1,6 +1,6 @@
 using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetworkApi.Mappers.Response;
+namespace SocialNetworkApi.Business.Mappers.Response;
 
 public record PostWithCommentsResponse(Guid PostId, Guid UserId, string Content, string ImageUrl, DateTime CreatedAt, IEnumerable<CommentResponse> Comments)
 {

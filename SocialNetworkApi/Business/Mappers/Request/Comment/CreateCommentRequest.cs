@@ -1,12 +1,12 @@
-namespace SocialNetworkApi.Mappers.Request.Comment;
+namespace SocialNetworkApi.Business.Mappers.Request.Comment;
 
 public record CreateCommentRequest(Guid UserId, string Content)
 {
-    public DataAccess.Entities.Comment ToDomain(Guid PostId)
+    public DataAccess.Entities.Comment ToDomain(Guid postId)
     {
         return new DataAccess.Entities.Comment
         {
-            PostId = PostId,
+            PostId = postId,
             UserId = UserId,
             Content = Content
         };

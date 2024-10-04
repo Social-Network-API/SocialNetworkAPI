@@ -1,8 +1,8 @@
+using SocialNetworkApi.Business.Mappers.Response;
 using SocialNetworkApi.DataAccess.Entities;
 using SocialNetworkApi.DataAccess.Repositories.Concretes;
 using SocialNetworkApi.Models;
 using SocialNetworkApi.Services.Interface;
-using SocialNetworkApi.Mappers.Response;
 
 namespace SocialNetworkApi.Services;
 public class UserService : IService<User, UserResponse>

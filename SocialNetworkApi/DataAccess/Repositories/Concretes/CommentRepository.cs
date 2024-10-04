@@ -47,7 +47,6 @@ public class CommentsRepository
         return new ServiceResult<Comment> { Data = existingComment, Success = true };
     }
 
-
     public async Task DeleteAsync(Guid commentId)
     {
         var comment = await _dbContext.Comments.FindAsync(commentId);
@@ -58,12 +57,12 @@ public class CommentsRepository
         }
     }
         
-    public async Task<IEnumerable<Comment>> GetCommentsForPostAsync(Guid postId)
-    { 
+    public async Task<IEnumerable<Comment>> GetCommentsForPostsAsync(IEnumerable<Guid> postIds)
+    {
         return await _dbContext.Comments
-            .Where(c => c.PostId == postId)
-            .OrderBy(c => c.CreatedAt)
+            .Where(c => postIds.Contains(c.PostId))
             .ToListAsync();
     }
+
 }
 
