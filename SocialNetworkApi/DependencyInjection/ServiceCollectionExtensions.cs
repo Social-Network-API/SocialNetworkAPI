@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Persistence.DataBase;
 using SocialNetwork.Persistence.Repositories;
 using SocialNetwork.Services;
+using SocialNetworkApi.Services;
 
 public static class ServiceCollectionExtensions
 {
@@ -14,7 +15,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserService>();
         services.AddScoped<CommentsService>();
         services.AddScoped<LikeService>();
-        services.AddScoped<AuthService>();
+        services.AddScoped<IAuthService, AuthService>();
         return services;
     }
 
