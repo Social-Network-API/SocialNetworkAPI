@@ -1,7 +1,7 @@
 using SocialNetwork.Entities;
 
 namespace SocialNetwork.Mappers.Requests;
-public record EditPostRequest(string Content, string ImageUrl)
+public record UpdatePostResponse(string Content, string ImageUrl)
 {
     public Post ToDomain()
     {

@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PostsService>();
         services.AddScoped<UserService>();
         services.AddScoped<CommentsService>();
+        services.AddScoped<LikeService>();
         return services;
     }
 
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserRepository>();
         services.AddScoped<CommentsRepository>();
         services.AddScoped<PostsRepository>();
+        services.AddScoped<LikeRepository>();
 
         return services;
     }

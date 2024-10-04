@@ -14,11 +14,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<Friend> Friends { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<Like> Likes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Friend>()
             .HasKey(f => new { f.UserId, f.FriendId });
+
     }
 }
 

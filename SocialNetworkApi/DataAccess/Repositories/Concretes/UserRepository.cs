@@ -65,4 +65,5 @@ public class UserRepository
             .OrderBy(u => u.Name)
             .ToListAsync();
     }
+
 }
