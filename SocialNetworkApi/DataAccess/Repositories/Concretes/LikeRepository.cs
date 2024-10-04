@@ -45,6 +45,24 @@ public class LikeRepository
 
     public async Task UpdateAsync(Guid likeId, Like updatedLike)
     {
-        await Task.CompletedTask;  
+        await Task.CompletedTask;
     }
+
+    public async Task<bool> CheckIfUserExistsAsync(Guid userId)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
+    }
+
+    public async Task<bool> CheckIfUserAlreadyLikedAsync(Guid postId, Guid userId)
+    {
+        return await _dbContext.Likes.AnyAsync(l => l.PostId == postId && l.UserId == userId);
+    }
+
+    public async Task<IEnumerable<Like>> GetLikesByUserIdAsync(Guid userId)
+    {
+        return await _dbContext.Likes
+            .Where(l => l.UserId == userId)
+            .ToListAsync();
+    }
+
 }
