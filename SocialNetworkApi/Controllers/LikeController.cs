@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.Mappers.Requests;
-using SocialNetwork.Services;
+using SocialNetworkApi.Business.Mappers.Request.Like;
+using SocialNetworkApi.Services;
 
-namespace SocialNetwork.Controllers;
+namespace SocialNetworkApi.Controllers;
 
 [ApiController]
 [Route("api/v1/posts/{postId:guid}/likes")]
@@ -47,7 +47,7 @@ public class LikeController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpGet("user/{userId:guid}")]
+    [HttpGet("users/{userId:guid}")]
     public async Task<IActionResult> GetLikesByUserId(Guid userId)
     {
         var result = await _likeService.GetLikesByUserIdAsync(userId);

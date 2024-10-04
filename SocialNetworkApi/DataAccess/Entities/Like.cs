@@ -1,4 +1,5 @@
-namespace SocialNetwork.Entities;
+namespace SocialNetworkApi.DataAccess.Entities;
+
 public class Like
 {
     public Guid Id { get; set; }

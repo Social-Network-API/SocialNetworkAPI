@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Entities;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.Persistence.Repositories;
+namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
 
 public class UserRepository
 {

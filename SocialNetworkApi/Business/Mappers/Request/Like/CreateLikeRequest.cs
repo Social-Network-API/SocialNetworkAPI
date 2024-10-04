@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Business.Mappers.Request.Like;
 
-namespace SocialNetwork.Mappers.Requests;
 public record CreateLikeRequest(Guid UserId)
 {
-    public Like ToDomain()
+    public DataAccess.Entities.Like ToDomain()
     {
-        return new Like
+        return new DataAccess.Entities.Like
         {
             Id = Guid.NewGuid(),
             UserId = UserId,

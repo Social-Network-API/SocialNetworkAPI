@@ -1,4 +1,4 @@
-namespace SocialNetwork.Persistence.DataBase;
+namespace SocialNetworkApi.Persistence.DataBase;
 
 public static class DbConstants
 {

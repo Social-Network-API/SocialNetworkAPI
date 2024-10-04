@@ -1,56 +1,68 @@
-using SocialNetwork.Entities;
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.Models;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.Persistence.Repositories
+namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
+
+public class CommentsRepository
 {
-    public class CommentsRepository
+    private readonly ApplicationDbContext _dbContext;
+
+    public CommentsRepository(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public CommentsRepository(ApplicationDbContext dbContext)
+    public async Task<Comment> CreateAsync(Comment comment)
+    {
+        await _dbContext.Comments.AddAsync(comment);
+        await _dbContext.SaveChangesAsync();
+        return comment;
+    }
+
+    public async Task<IEnumerable<Comment>> GetByPostIdAsync(Guid postId)
+    {
+        return await _dbContext.Comments
+            .Where(c => c.PostId == postId)
+            .ToListAsync();
+    }
+
+    public async Task<ServiceResult<Comment>> GetByIdAsync(Guid commentId) 
+    {
+        var comment = await _dbContext.Comments.FindAsync(commentId);
+        return comment == null 
+            ? new ServiceResult<Comment> { Success = false }
+            : new ServiceResult<Comment> { Data = comment, Success = true };
+    }
+
+    public async Task<ServiceResult<Comment>> UpdateAsync(Guid commentId, Comment updatedComment)
+    {
+        var existingComment = await _dbContext.Comments.FindAsync(commentId);
+        if (existingComment == null)
+            return new ServiceResult<Comment> { Success = false };
+
+        existingComment.Content = updatedComment.Content;
+        await _dbContext.SaveChangesAsync();
+        return new ServiceResult<Comment> { Data = existingComment, Success = true };
+    }
+
+    public async Task DeleteAsync(Guid commentId)
+    {
+        var comment = await _dbContext.Comments.FindAsync(commentId);
+        if (comment != null)
         {
-            _dbContext = dbContext;
-        }
-
-        public async Task<Comment> CreateAsync(Comment comment)
-        {
-            await _dbContext.Comments.AddAsync(comment);
-            await _dbContext.SaveChangesAsync();
-            return comment;
-        }
-
-        public async Task<IEnumerable<Comment>> GetByPostIdAsync(Guid postId)
-        {
-            return await _dbContext.Comments
-                .Where(c => c.PostId == postId)
-                .ToListAsync();
-        }
-
-        public async Task<Comment> GetByIdAsync(Guid commentId)
-        {
-            return await _dbContext.Comments.FindAsync(commentId);
-        }
-
-        public async Task<Comment> UpdateAsync(Guid commentId, Comment updatedComment)
-        {
-            var existingComment = await _dbContext.Comments.FindAsync(commentId);
-            if (existingComment == null)
-                return null;
-
-            existingComment.Content = updatedComment.Content;
-            await _dbContext.SaveChangesAsync();
-            return existingComment;
-        }
-
-        public async Task DeleteAsync(Guid commentId)
-        {
-            var comment = await _dbContext.Comments.FindAsync(commentId);
-            if (comment != null)
-            {
-                _dbContext.Comments.Remove(comment);
-                await _dbContext.SaveChangesAsync();
-            }
+            _dbContext.Comments.Remove(comment);
+            await _dbContext.SaveChangesAsync(); 
         }
     }
+        
+    public async Task<IEnumerable<Comment>> GetCommentsForPostsAsync(IEnumerable<Guid> postIds)
+    {
+        return await _dbContext.Comments
+            .Where(c => postIds.Contains(c.PostId))
+            .ToListAsync();
+    }
+
 }
+

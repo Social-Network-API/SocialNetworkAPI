@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.Mappers.Requests;
-using SocialNetwork.Mappers.Responses;
+using SocialNetworkApi.Business.Mappers.Request.User;
+using SocialNetworkApi.Business.Mappers.Response;
+using SocialNetworkApi.Services;
 
-namespace SocialNetwork.Services;
+namespace SocialNetworkApi.Controllers;
 [ApiController]
 [Route("api/v1/users")]
 public class UserController : ControllerBase

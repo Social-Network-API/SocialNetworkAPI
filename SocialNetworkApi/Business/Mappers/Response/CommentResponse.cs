@@ -1,6 +1,6 @@
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Mappers.Responses;
+namespace SocialNetworkApi.Business.Mappers.Response;
 public record CommentResponse(Guid CommentId, Guid PostId, Guid UserId, string Content, DateTime CreatedAt)
 {
     public static CommentResponse FromDomain(Comment comment)

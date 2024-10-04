@@ -1,6 +1,6 @@
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Mappers.Responses;
+namespace SocialNetworkApi.Business.Mappers.Response;
 public record LikeResponse(Guid id, Guid PostId, Guid UserId, DateTime CreatedAt)
 {
     public static LikeResponse FromDomain(Like like)

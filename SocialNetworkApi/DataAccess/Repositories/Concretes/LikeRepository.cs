@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Entities;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.Persistence.Repositories;
+namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
+
 public class LikeRepository
 {
     private readonly ApplicationDbContext _dbContext;
@@ -64,5 +65,4 @@ public class LikeRepository
             .Where(l => l.UserId == userId)
             .ToListAsync();
     }
-
-}
+  }

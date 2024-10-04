@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Business.Mappers.Request.User;
 
-namespace SocialNetwork.Mappers.Requests;
 public record UpdateUserResponse(string Name, string ProfilePicture)
 {
-    public User ToDomain()
+    public DataAccess.Entities.User ToDomain()
     {
-        return new User
+        return new DataAccess.Entities.User
         {
             Name = Name,
             ProfilePicture = ProfilePicture

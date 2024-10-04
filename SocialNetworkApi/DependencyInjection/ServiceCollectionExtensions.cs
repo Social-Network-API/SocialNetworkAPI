@@ -1,10 +1,9 @@
-namespace SocialNetworkApi.DependencyInjection;
-
+using SocialNetworkApi.DataAccess.Repositories.Concretes;
+using SocialNetworkApi.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.Persistence.DataBase;
-using SocialNetwork.Persistence.Repositories;
-using SocialNetwork.Services;
+using SocialNetworkApi.Persistence.DataBase;
+
+namespace SocialNetworkApi.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
@@ -13,6 +12,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PostsService>();
         services.AddScoped<UserService>();
         services.AddScoped<CommentsService>();
+        services.AddScoped<FollowService>();
         services.AddScoped<LikeService>();
         return services;
     }
@@ -22,8 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserRepository>();
         services.AddScoped<CommentsRepository>();
         services.AddScoped<PostsRepository>();
+        services.AddScoped<FollowRepository>();
         services.AddScoped<LikeRepository>();
-
         return services;
     }
 
