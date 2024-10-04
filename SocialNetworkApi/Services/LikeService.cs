@@ -3,7 +3,6 @@ using SocialNetwork.Mappers.Responses;
 using SocialNetwork.Persistence.Repositories;
 using SocialNetwork.Models;
 using RestApi.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace SocialNetwork.Services;
 public class LikeService : IService<Like, LikeResponse>
@@ -49,5 +48,23 @@ public class LikeService : IService<Like, LikeResponse>
         var response = likes.Select(LikeResponse.FromDomain);
         return new ServiceResult<IEnumerable<LikeResponse>> { Data = response, Success = true };
     }
+
+    public async Task<bool> CheckIfUserExistsAsync(Guid userId)
+    {
+        return await _likeRepository.CheckIfUserExistsAsync(userId);
+    }
+
+    public async Task<bool> CheckIfUserAlreadyLikedAsync(Guid postId, Guid userId)
+    {
+        return await _likeRepository.CheckIfUserAlreadyLikedAsync(postId, userId);
+    }
+
+    public async Task<ServiceResult<IEnumerable<LikeResponse>>> GetLikesByUserIdAsync(Guid userId)
+    {
+        var likes = await _likeRepository.GetLikesByUserIdAsync(userId);
+        var response = likes.Select(LikeResponse.FromDomain);
+        return new ServiceResult<IEnumerable<LikeResponse>> { Data = response, Success = true };
+    }
+
 
 }

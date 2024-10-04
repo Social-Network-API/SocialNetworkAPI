@@ -65,16 +65,4 @@ public class UserService : IService<User, UserResponse>
         return users.Select(UserResponse.FromDomain);
     }
 
-    public async Task<ServiceResult<IEnumerable<Post>>> GetUserLikesAsync(Guid userId)
-    {
-        var likedPosts = await _UsersRepository.GetUserLikesAsync(userId);
-
-        if (likedPosts == null || !likedPosts.Any())
-        {
-            return new ServiceResult<IEnumerable<Post>> { Data = null, Success = false };
-        }
-
-        return new ServiceResult<IEnumerable<Post>> { Data = likedPosts, Success = true };
-    }
-
 }
