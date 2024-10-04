@@ -27,3 +27,14 @@ CREATE TABLE Likes (
     post_id UUID REFERENCES Posts(post_id) ON DELETE CASCADE,
     user_id UUID REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+CREATE TABLE Follows (
+    id UUID PRIMARY KEY,
+    follower_id UUID NOT NULL,
+    followed_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (follower_id) REFERENCES Users(user_id),
+    FOREIGN KEY (followed_id) REFERENCES Users(user_id)
+    UNIQUE (follower_id, followed_id)
+);
+

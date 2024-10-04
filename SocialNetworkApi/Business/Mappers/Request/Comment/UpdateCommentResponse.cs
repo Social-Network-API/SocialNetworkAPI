@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Business.Mappers.Request.Comment;
 
-namespace SocialNetwork.Mappers.Requests;
 public record UpdateCommentResponse(string Content)
 {
-    public Comment ToDomain()
+    public DataAccess.Entities.Comment ToDomain()
     {
-        return new Comment
+        return new DataAccess.Entities.Comment
         {
             Content = Content,
             CreatedAt = DateTime.UtcNow

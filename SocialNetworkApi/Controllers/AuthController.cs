@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkApi.Services;
 using SocialNetworkApi.Mappers.Request.Auth;
+using SocialNetworkApi.Services.Interface;
 
 namespace SocialNetworkApi.Controllers;
 

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Entities;
+using SocialNetworkApi.DataAccess.Entities;
 
-namespace SocialNetwork.Persistence.DataBase;
+namespace SocialNetworkApi.Persistence.DataBase;
 
 public class ApplicationDbContext : DbContext
 {
@@ -11,16 +11,28 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Post> Posts { get; set; }
-    public DbSet<Friend> Friends { get; set; }
+    public DbSet<Follower> Followers { get; set; } 
     public DbSet<User> Users { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Like> Likes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Friend>()
-            .HasKey(f => new { f.UserId, f.FriendId });
+        modelBuilder.Entity<Follower>()
+            .HasKey(f => f.Id);  
 
+        modelBuilder.Entity<Follower>()
+            .HasOne<User>()  
+            .WithMany()
+            .HasForeignKey(f => f.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Follower>()
+            .HasOne<User>() 
+            .WithMany()
+            .HasForeignKey(f => f.FollowedId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
 

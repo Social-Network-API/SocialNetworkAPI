@@ -1,6 +1,8 @@
 using System.Reflection;
 using DbUp;
-namespace SocialNetwork.Persistence.DataBase;
+
+namespace SocialNetworkApi.Persistence.DataBase;
+
 public static class DbInitializer
 {
     public static void Initialize(string connectionString)
@@ -22,5 +24,4 @@ public static class DbInitializer
         var result = upgrader.PerformUpgrade();
         if (!result.Successful) throw new InvalidOperationException("Database migration failed");
     }
-
 }

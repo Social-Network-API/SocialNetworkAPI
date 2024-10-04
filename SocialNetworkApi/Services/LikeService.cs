@@ -1,10 +1,10 @@
-using SocialNetwork.Entities;
-using SocialNetwork.Mappers.Responses;
-using SocialNetwork.Persistence.Repositories;
-using SocialNetwork.Models;
-using RestApi.Services.Interfaces;
+using SocialNetworkApi.Business.Mappers.Response;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.DataAccess.Repositories.Concretes;
+using SocialNetworkApi.Models;
+using SocialNetworkApi.Services.Interface;
 
-namespace SocialNetwork.Services;
+namespace SocialNetworkApi.Services;
 public class LikeService : IService<Like, LikeResponse>
 {
     private readonly LikeRepository _likeRepository;

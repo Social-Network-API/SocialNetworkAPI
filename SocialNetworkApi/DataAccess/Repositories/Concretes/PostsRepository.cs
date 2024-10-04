@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Entities;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.Persistence.Repositories;
+namespace SocialNetworkApi.DataAccess.Repositories.Concretes;
+
 public class PostsRepository
 {
     private readonly ApplicationDbContext _dbContext;
@@ -22,12 +23,12 @@ public class PostsRepository
         return post;
     }
 
-    public async Task<Post> GetByIdAsync(Guid postId)
+    public async Task<Post?> GetByIdAsync(Guid postId)
     {
         return await _dbContext.Posts.FindAsync(postId);
     }
 
-    public async Task<Post> EditAsync(Guid postId, Post updatedPost)
+    public async Task<Post?> EditAsync(Guid postId, Post updatedPost)
     {
         var existingPost = await _dbContext.Posts.FindAsync(postId);
         if (existingPost == null)
@@ -61,10 +62,18 @@ public class PostsRepository
 
     public async Task<IEnumerable<Post>> GetHomePostsAsync(Guid userId)
     {
+        var followedUserIds = await _dbContext.Followers
+            .Where(f => f.FollowerId == userId)
+            .Select(f => f.FollowedId)
+            .ToListAsync();
+
+        followedUserIds.Add(userId); 
+    
         return await _dbContext.Posts
-            .Where(p => p.UserId == userId ||
-                        _dbContext.Friends.Any(f => f.UserId == userId && f.FriendId == p.UserId))
+            .Where(p => followedUserIds.Contains(p.UserId))
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
+
+
 }

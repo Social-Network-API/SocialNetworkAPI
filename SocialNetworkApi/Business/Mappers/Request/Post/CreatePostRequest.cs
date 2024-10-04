@@ -1,11 +1,10 @@
-using SocialNetwork.Entities;
+namespace SocialNetworkApi.Business.Mappers.Request.Post;
 
-namespace SocialNetwork.Mappers.Requests;
 public record CreatePostRequest(Guid UserId, string Content, string ImageUrl)
 {
-    public Post ToDomain()
+    public DataAccess.Entities.Post ToDomain()
     {
-        return new Post
+        return new DataAccess.Entities.Post
         {
             Id = Guid.NewGuid(),
             UserId = UserId,

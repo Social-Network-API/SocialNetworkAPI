@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using SocialNetwork.Persistence.DataBase;
+using SocialNetworkApi.Persistence.DataBase;
 
-namespace SocialNetwork.RequestPipeline
+namespace SocialNetworkApi.RequestPipeline
 {
     public static class WebApplicationExtensions
     {
         public static WebApplication InitializeDatabase(this WebApplication app)
         {
-            DbInitializer.Initialize(app.Configuration[DbConstants.DefaultConnectionPath]);
+            var connectionString = app.Configuration[DbConstants.DefaultConnectionPath];
+            if (connectionString != null)
+            {
+                DbInitializer.Initialize(connectionString);
+            }
 
             return app;
         }

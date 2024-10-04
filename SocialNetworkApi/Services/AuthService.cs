@@ -2,10 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SocialNetwork.Entities;
-using SocialNetwork.Persistence.Repositories;
+using SocialNetworkApi.DataAccess.Entities;
+using SocialNetworkApi.DataAccess.Repositories.Concretes;
 using SocialNetworkApi.Mappers.Request.Auth;
-using SocialNetworkApi.Services;
+using SocialNetworkApi.Services.Interface;
 
 namespace SocialNetwork.Services;
 
@@ -67,7 +67,7 @@ public class AuthService : IAuthService
     private string GenerateJwtToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? string.Empty);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
@@ -84,25 +84,28 @@ public class AuthService : IAuthService
 
     public async Task<bool> LogoutAsync(string token)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
-        var validationParameters = new TokenValidationParameters
+        return await Task.Run(() =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = false
-        };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? string.Empty);
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false
+            };
 
-        try
-        {
-            tokenHandler.ValidateToken(token, validationParameters, out _);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParameters, out _);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        });
     }
 }
