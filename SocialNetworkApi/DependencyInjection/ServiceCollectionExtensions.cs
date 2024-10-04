@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserService>();
         services.AddScoped<CommentsService>();
         services.AddScoped<LikeService>();
+        services.AddScoped<AuthService>();
         return services;
     }
 
