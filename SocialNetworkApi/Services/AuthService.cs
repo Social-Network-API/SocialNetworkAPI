@@ -81,4 +81,28 @@ public class AuthService : IAuthService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    public async Task<bool> LogoutAsync(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false
+        };
+
+        try
+        {
+            tokenHandler.ValidateToken(token, validationParameters, out _);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

@@ -7,5 +7,6 @@ namespace SocialNetworkApi.Services
     {
         Task<User> RegisterAsync(RegisterRequest request);
         Task<string> LoginAsync(LoginRequest request);
+        Task<bool> LogoutAsync(string token);
     }
 }
