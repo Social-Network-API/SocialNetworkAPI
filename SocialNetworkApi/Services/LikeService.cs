@@ -50,10 +50,4 @@ public class LikeService : IService<Like, LikeResponse>
         return new ServiceResult<IEnumerable<LikeResponse>> { Data = response, Success = true };
     }
 
-    public async Task<ServiceResult<IEnumerable<LikeResponse>>> GetLikesByUserIdAsync(Guid userId)
-    {
-        var likes = await _likeRepository.GetUserLikesAsync(userId);
-        var response = likes.Select(LikeResponse.FromDomain);
-        return new ServiceResult<IEnumerable<LikeResponse>> { Data = response, Success = true };
-    }
 }
