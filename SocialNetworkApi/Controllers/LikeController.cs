@@ -20,9 +20,14 @@ public class LikeController : ControllerBase
     {
         var like = request.ToDomain();
         like.PostId = postId;
+
         var userExists = await _likeService.CheckIfUserExistsAsync(like.UserId);
         if (!userExists)
             return BadRequest($"User with ID {like.UserId} does not exist.");
+
+        var alreadyLiked = await _likeService.CheckIfUserAlreadyLikedAsync(postId, like.UserId);
+        if (alreadyLiked)
+            return Conflict($"User with ID {like.UserId} has already liked this post.");
 
         var result = await _likeService.CreateAsync(like);
         return CreatedAtAction(nameof(GetLikesByPostId), new { postId }, result.Data);
@@ -41,5 +46,15 @@ public class LikeController : ControllerBase
         var result = await _likeService.GetLikesByPostIdAsync(postId);
         return Ok(result.Data);
     }
+
+    [HttpGet("user/{userId:guid}")]
+    public async Task<IActionResult> GetLikesByUserId(Guid userId)
+    {
+        var result = await _likeService.GetLikesByUserIdAsync(userId);
+        return result.Data is null || !result.Data.Any()
+            ? NotFound(new { message = "No likes found for this user." })
+            : Ok(result.Data);
+    }
+
 
 }

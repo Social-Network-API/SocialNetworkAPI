@@ -77,20 +77,4 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
-    [Route("{userId:guid}/likes")]
-    public async Task<IActionResult> GetUserLikes([FromRoute] Guid userId)
-    {
-        var result = await _userService.GetUserLikesAsync(userId);
-
-        if (result.Data == null || !result.Data.Any())
-        {
-            return NotFound($"No likes found for user with ID {userId}");
-        }
-
-        var likeResponses = result.Data.Select(post => new { post.Id }).ToList();
-
-        return Ok(likeResponses);
-    }
-
 }
