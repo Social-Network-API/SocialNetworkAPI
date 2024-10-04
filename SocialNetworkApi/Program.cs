@@ -1,12 +1,7 @@
 using SocialNetworkApi.DependencyInjection;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SocialNetwork.Persistence.DataBase;
-using SocialNetwork.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer; 
-using SocialNetwork.Services;
-using SocialNetworkApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
