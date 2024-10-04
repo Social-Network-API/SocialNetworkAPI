@@ -6,7 +6,6 @@ public class Post
     public string Content { get; set; }
     public DateTime CreatedAt { get; set; }
     public string ImageUrl { get; set; }
-    public ICollection<User> LikedByUsers { get; set; } = new List<User>();
 
     public Post()
     {

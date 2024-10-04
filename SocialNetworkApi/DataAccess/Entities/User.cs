@@ -8,7 +8,6 @@ public class User
     public string Password { get; set; }
     public required string ProfilePicture { get; set; }
     public DateTime CreatedAt { get; set; }
-    public ICollection<Post> LikedPosts { get; set; } = new List<Post>();
     
     public User()
     {
