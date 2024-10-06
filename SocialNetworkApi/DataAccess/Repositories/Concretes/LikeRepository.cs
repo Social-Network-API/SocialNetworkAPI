@@ -73,5 +73,15 @@ public class LikeRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Post>> GetPostsLikedByUserAsync(Guid userId)
+    {
+        return await _dbContext.Likes
+            .Where(like => like.UserId == userId)
+            .Join(_dbContext.Posts, 
+                like => like.PostId, 
+                post => post.Id, 
+                (like, post) => post)
+            .ToListAsync();
+    }
 
   }

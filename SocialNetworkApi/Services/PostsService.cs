@@ -90,6 +90,29 @@ public class PostsService : IService<Post, PostResponse>
 
         return new ServiceResult<IEnumerable<PostWithDetailsResponse>> { Data = postsWithDetails, Success = true };
     }
+    
+    public async Task<ServiceResult<IEnumerable<PostWithDetailsResponse>>> GetPostsLikedByUserAsync(Guid userId)
+    {
+        var likedPosts = await _likeRepository.GetPostsLikedByUserAsync(userId);
+        var postIds = likedPosts.Select(p => p.Id).ToList();
+        var comments = await _commentsRepository.GetCommentsForPostsAsync(postIds);
+        var likes = await _likeRepository.GetLikesForPostsAsync(postIds);
+        var commentsGrouped = comments.GroupBy(c => c.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        var likesGrouped = likes.GroupBy(l => l.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var postsWithDetails = likedPosts.Select(post =>
+        {
+            var user = _userRepository.GetByIdAsync(post.UserId).Result;
+            var commentsForPost = commentsGrouped.ContainsKey(post.Id) ? commentsGrouped[post.Id] : new List<Comment>();
+            var likesForPost = likesGrouped.ContainsKey(post.Id) ? likesGrouped[post.Id] : new List<Like>();
+
+            return PostWithDetailsResponse.FromDomain(post, user, commentsForPost, likesForPost);
+        }).ToList();
+
+        return new ServiceResult<IEnumerable<PostWithDetailsResponse>> { Data = postsWithDetails, Success = true };
+    }
 
 }
 
