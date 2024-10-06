@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SocialNetworkApi.Business.Mappers.Response;
 using SocialNetworkApi.DataAccess.Entities;
 using SocialNetworkApi.Persistence.DataBase;
 
@@ -67,13 +68,19 @@ public class PostsRepository
             .Select(f => f.FollowedId)
             .ToListAsync();
 
-        followedUserIds.Add(userId); 
-    
+        followedUserIds.Add(userId);
+
         return await _dbContext.Posts
             .Where(p => followedUserIds.Contains(p.UserId))
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
-
+    
+    public async Task<IEnumerable<Like>> GetLikesForPostAsync(Guid postId)
+    {
+        return await _dbContext.Likes
+            .Where(l => l.PostId == postId)
+            .ToListAsync();
+    }
 
 }

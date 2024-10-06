@@ -2,11 +2,10 @@ using SocialNetworkApi.DataAccess.Entities;
 
 namespace SocialNetworkApi.Business.Mappers.Response;
 
-public record UserResponse(Guid Id, string Name, string Email, DateTime CreatedAt)
+public record UserResponse(Guid Id, string Name, string Email, DateTime CreatedAt, string ProfilePicture)
 {
-    public static UserResponse FromDomain(User User)
+    public static UserResponse FromDomain(User user)
     {
-        return new UserResponse(User.UserId, User.Name, User.Email, User.CreatedAt);
+        return new UserResponse(user.UserId, user.Name, user.Email, user.CreatedAt, user.ProfilePicture);
     }
 }
-
