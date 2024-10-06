@@ -1,7 +1,9 @@
 using SocialNetworkApi.DataAccess.Repositories.Concretes;
-using SocialNetworkApi.Services;
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkApi.Persistence.DataBase;
+using SocialNetwork.Services;
+using SocialNetworkApi.Services;
+using SocialNetworkApi.Services.Interface;
 
 namespace SocialNetworkApi.DependencyInjection;
 
@@ -14,6 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CommentsService>();
         services.AddScoped<FollowService>();
         services.AddScoped<LikeService>();
+        services.AddScoped<IAuthService, AuthService>();
         return services;
     }
 

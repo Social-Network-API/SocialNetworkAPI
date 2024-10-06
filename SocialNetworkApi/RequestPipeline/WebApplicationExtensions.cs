@@ -7,7 +7,11 @@ namespace SocialNetworkApi.RequestPipeline
     {
         public static WebApplication InitializeDatabase(this WebApplication app)
         {
-            DbInitializer.Initialize(app.Configuration[DbConstants.DefaultConnectionPath]);
+            var connectionString = app.Configuration[DbConstants.DefaultConnectionPath];
+            if (connectionString != null)
+            {
+                DbInitializer.Initialize(connectionString);
+            }
 
             return app;
         }

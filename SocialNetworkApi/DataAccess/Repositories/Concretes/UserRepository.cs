@@ -65,5 +65,9 @@ public class UserRepository
             .OrderBy(u => u.Name)
             .ToListAsync();
     }
-
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
 }
