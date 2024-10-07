@@ -35,7 +35,6 @@ public class AuthService : IAuthService
             Name = request.Name,
             Email = request.Email,
             Password = hashedPassword,
-            ProfilePicture = request.ProfilePicture
         };
 
         await _userRepository.CreateAsync(user);
