@@ -41,7 +41,7 @@ public class AuthService : IAuthService
         return user;
     }
 
-    public async Task<string> LoginAsync(LoginRequest request)
+    public async Task<(string token, Guid userId)> LoginAsync(LoginRequest request)
     {
         var user = await _userRepository.GetByEmailAsync(request.Email);
         if (user == null || !VerifyPassword(user.Password, request.Password))
@@ -50,8 +50,9 @@ public class AuthService : IAuthService
         }
 
         var token = GenerateJwtToken(user);
-        return token;
+        return (token, user.UserId); 
     }
+
 
     private string HashPassword(string password)
     {
