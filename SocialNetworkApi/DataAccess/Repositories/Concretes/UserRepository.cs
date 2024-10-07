@@ -70,4 +70,11 @@ public class UserRepository
         return await _dbContext.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
+    
+    public async Task<List<User>> GetUsersByIdsAsync(List<Guid> userIds)
+    {
+        return await _dbContext.Users
+            .Where(u => userIds.Contains(u.UserId))
+            .ToListAsync();
+    }
 }

@@ -62,5 +62,16 @@ public class PostsController(PostsService postsService) : ControllerBase
         var result = await _postsService.GetHomePostsWithCommentsAsync(userId);
         return Ok(result.Data);
     }
+    
+    [HttpGet("liked")]
+    public async Task<IActionResult> GetPostsLikedByUser([FromQuery] Guid userId)
+    {
+        var result = await _postsService.GetPostsLikedByUserAsync(userId);
+        if (!result.Success)
+        {
+            return NotFound("No liked posts found for this user.");
+        }
+        return Ok(result.Data);
+    }
 }
 

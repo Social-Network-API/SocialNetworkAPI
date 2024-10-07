@@ -55,6 +55,4 @@ public class LikeController : ControllerBase
             ? NotFound(new { message = "No likes found for this user." })
             : Ok(result.Data);
     }
-
-
 }

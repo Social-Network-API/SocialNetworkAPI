@@ -39,15 +39,15 @@ public class AuthController : ControllerBase
 
         try
         {
-            var token = await _authService.LoginAsync(request);
-            return Ok(new { token });
+            var (token, userId) = await _authService.LoginAsync(request); 
+            return Ok(new { token, userId });
         }
         catch (Exception)
         {
             return BadRequest(new { message = "Invalid email or password." });
         }
-
     }
+
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout([FromBody] string token)

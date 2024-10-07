@@ -10,12 +10,17 @@ public class PostsService : IService<Post, PostResponse>
     private readonly PostsRepository _postsRepository;
     private readonly FollowRepository _followRepository;
     private readonly CommentsRepository _commentsRepository;
+    private readonly LikeRepository _likeRepository;
+    private readonly UserRepository _userRepository;
 
-    public PostsService(PostsRepository postsRepository, FollowRepository followRepository, CommentsRepository commentsRepository)
+    public PostsService(PostsRepository postsRepository, FollowRepository followRepository, CommentsRepository commentsRepository ,LikeRepository likeRepository , UserRepository userRepository)
     {
         _postsRepository = postsRepository;
         _followRepository = followRepository;
         _commentsRepository = commentsRepository;
+        _likeRepository = likeRepository;
+        _userRepository = userRepository;
+
     }
 
     public async Task<ServiceResult<PostResponse>> CreateAsync(Post post)
@@ -63,35 +68,50 @@ public class PostsService : IService<Post, PostResponse>
         var response = posts.Select(PostResponse.FromDomain);
         return new ServiceResult<IEnumerable<PostResponse>> { Data = response, Success = true };
     }
-
-    public async Task<ServiceResult<IEnumerable<PostResponse>>> GetHomePostsAsync(Guid userId)
+    
+    public async Task<ServiceResult<IEnumerable<PostWithDetailsResponse>>> GetHomePostsWithCommentsAsync(Guid userId)
     {
         var posts = await _postsRepository.GetHomePostsAsync(userId);
-        var friendPosts = posts
-            .Where(p => p.UserId == userId || _followRepository.AreFriendsAsync(userId, p.UserId).Result)
-            .OrderByDescending(p => p.CreatedAt);
-
-        var response = friendPosts.Select(PostResponse.FromDomain);
-        return new ServiceResult<IEnumerable<PostResponse>> { Data = response, Success = true };
-    }
-    
-    public async Task<ServiceResult<IEnumerable<PostWithCommentsResponse>>> GetHomePostsWithCommentsAsync(Guid userId)
-    {
-        var posts = await _postsRepository.GetHomePostsAsync(userId);
-    
         var postIds = posts.Select(p => p.Id).ToList();
         var comments = await _commentsRepository.GetCommentsForPostsAsync(postIds);
-    
+        var likes = await _likeRepository.GetLikesForPostsAsync(postIds);
         var commentsGrouped = comments.GroupBy(c => c.PostId)
             .ToDictionary(g => g.Key, g => g.ToList());
-
-        var postsWithComments = posts.Select(post => 
+        var likesGrouped = likes.GroupBy(l => l.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        var postsWithDetails = posts.Select(post =>
         {
+            var user = _userRepository.GetByIdAsync(post.UserId).Result;
             var commentsForPost = commentsGrouped.ContainsKey(post.Id) ? commentsGrouped[post.Id] : new List<Comment>();
-            return PostWithCommentsResponse.FromDomain(post, commentsForPost);
+            var likesForPost = likesGrouped.ContainsKey(post.Id) ? likesGrouped[post.Id] : new List<Like>();
+
+            return PostWithDetailsResponse.FromDomain(post, user, commentsForPost, likesForPost);
         }).ToList();
 
-        return new ServiceResult<IEnumerable<PostWithCommentsResponse>> { Data = postsWithComments, Success = true };
+        return new ServiceResult<IEnumerable<PostWithDetailsResponse>> { Data = postsWithDetails, Success = true };
+    }
+    
+    public async Task<ServiceResult<IEnumerable<PostWithDetailsResponse>>> GetPostsLikedByUserAsync(Guid userId)
+    {
+        var likedPosts = await _likeRepository.GetPostsLikedByUserAsync(userId);
+        var postIds = likedPosts.Select(p => p.Id).ToList();
+        var comments = await _commentsRepository.GetCommentsForPostsAsync(postIds);
+        var likes = await _likeRepository.GetLikesForPostsAsync(postIds);
+        var commentsGrouped = comments.GroupBy(c => c.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        var likesGrouped = likes.GroupBy(l => l.PostId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var postsWithDetails = likedPosts.Select(post =>
+        {
+            var user = _userRepository.GetByIdAsync(post.UserId).Result;
+            var commentsForPost = commentsGrouped.ContainsKey(post.Id) ? commentsGrouped[post.Id] : new List<Comment>();
+            var likesForPost = likesGrouped.ContainsKey(post.Id) ? likesGrouped[post.Id] : new List<Like>();
+
+            return PostWithDetailsResponse.FromDomain(post, user, commentsForPost, likesForPost);
+        }).ToList();
+
+        return new ServiceResult<IEnumerable<PostWithDetailsResponse>> { Data = postsWithDetails, Success = true };
     }
 
 }

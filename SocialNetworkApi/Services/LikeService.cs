@@ -65,6 +65,4 @@ public class LikeService : IService<Like, LikeResponse>
         var response = likes.Select(LikeResponse.FromDomain);
         return new ServiceResult<IEnumerable<LikeResponse>> { Data = response, Success = true };
     }
-
-
 }
